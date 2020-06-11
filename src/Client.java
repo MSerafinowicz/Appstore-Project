@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Random;
 
 public class Client extends Person implements GenerateRandomInteger
@@ -12,7 +13,14 @@ public class Client extends Person implements GenerateRandomInteger
     private Integer noPenalty;
     private Integer contractLoss;
 
-    List<Project> projectList = new ArrayList<Project>(1);
+    public List<Project> projectList = new ArrayList<Project>(1);
+
+    public int getProjectId(Project project)
+    {
+        int index;
+        index = projectList.indexOf(project);
+        return index;
+    }
 
     @Override
     public Integer intGenerate(Integer bound)
@@ -67,5 +75,10 @@ public class Client extends Person implements GenerateRandomInteger
                 this.noPenalty = 11;
                 this.contractLoss = 11;
         }
+    }
+
+    public String showInfo()
+    {
+        return this.name+" "+this.surname;
     }
 }

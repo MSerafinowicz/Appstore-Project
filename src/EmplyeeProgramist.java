@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class EmplyeeProgramist extends Person implements GenerateRandomInteger,GenerateRandomDouble
+public class EmplyeeProgramist extends Employee implements GenerateRandomInteger,GenerateRandomDouble
 {
     private boolean frontend;
     private boolean backend;
@@ -10,7 +10,8 @@ public class EmplyeeProgramist extends Person implements GenerateRandomInteger,G
     private boolean mobile;
     private boolean wordpress;
     private boolean prestashop;
-    public Double minSalary = doubleGenerate()*3;
+    private Double salary = doubleGenerate()*3;
+    private Double transferFee = 100.0;
 
     public List<EmplyeeProgramist> lookingForJob = new ArrayList<>(10);
 
@@ -21,7 +22,7 @@ public class EmplyeeProgramist extends Person implements GenerateRandomInteger,G
             String name = namePoolMale[nameNumber];
             int surnameNumber = intGenerate(10);
             String surname = surnamePoolMale[surnameNumber];
-            int age = intGenerate(47, 18);
+            int age = intGenerate(20, 18);
 
             Random trueFalse = new Random();
             this.name = name;
@@ -35,14 +36,13 @@ public class EmplyeeProgramist extends Person implements GenerateRandomInteger,G
             this.wordpress = trueFalse.nextBoolean();
             this.prestashop = trueFalse.nextBoolean();
 
-
         } else
         {
             int nameNumber = intGenerate(6);
             String name = namePoolFemale[nameNumber];
             int surnameNumber = intGenerate(10);
             String surname = surnamePoolFemale[surnameNumber];
-            int age = intGenerate(47, 18);
+            int age = intGenerate(20, 18);
 
             Random trueFalse = new Random();
             this.name = name;
@@ -58,6 +58,7 @@ public class EmplyeeProgramist extends Person implements GenerateRandomInteger,G
         }
 
     }
+
 
     public void showInfo()
     {

@@ -6,7 +6,6 @@ import java.util.Random;
 public class Project implements GenerateRandomDouble, GenerateRandomInteger {
     private String projectName;
     private Integer deadLine;
-    Client client;
     private Double cashPenalty;
     private Double salary;
     private Integer paymentTime;

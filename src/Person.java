@@ -1,6 +1,6 @@
 
 
-public class Person
+public abstract class Person
 {
     protected String name;
     protected String surname;
@@ -31,4 +31,6 @@ public class Person
     public void setCash(Double cash) {
         this.cash = cash;
     }
+
+
 }
