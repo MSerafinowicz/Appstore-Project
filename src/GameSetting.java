@@ -4,11 +4,11 @@ public class GameSetting
     {
         System.out.flush();
         Player player1 = new Player(name,surname,age);
-        EmplyeeProgramist employeeProgramist1 = new EmplyeeProgramist();
-        EmplyeeProgramist employeeProgramist2 = new EmplyeeProgramist();
-        EmplyeeProgramist employeeProgramist3 = new EmplyeeProgramist();
-        EmplyeeProgramist employeeProgramist4 = new EmplyeeProgramist();
-        EmplyeeProgramist employeeProgramist5 = new EmplyeeProgramist();
+        EmployeeProgrammer employeeProgrammer1 = new EmployeeProgrammer();
+        EmployeeProgrammer employeeProgrammer2 = new EmployeeProgrammer();
+        EmployeeProgrammer employeeProgrammer3 = new EmployeeProgrammer();
+        EmployeeProgrammer employeeProgrammer4 = new EmployeeProgrammer();
+        EmployeeProgrammer employeeProgrammer5 = new EmployeeProgrammer();
         Project project1 = new Project(Project.difficultyLevel.easy);
         Project project2 = new Project(Project.difficultyLevel.easy);
         Project project3 = new Project(Project.difficultyLevel.easy);

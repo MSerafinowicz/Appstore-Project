@@ -10,8 +10,18 @@ public class Main
         calendar.set(2020,01,01);
         System.out.println(calendar.get(Calendar.DAY_OF_WEEK));
 
-        //todo: sort generated projects on available and unavailable, finish player.research to be able to add new available project, add rest of the possible actions
+        //todo:add rest of the possible actions
 
-       // List<Project> availableProjects = new ArrayList<Project>(3);
+        Player player = new Player("Marcin","Serafinowicz",21);
+        Client client = new Client(Client.clientType.Chill);
+        Project project = new Project(Project.difficultyLevel.high);
+        project.unavailableProjects.add(project);
+        player.doResearch();
+        player.doResearch();
+        player.doResearch();
+        player.doResearch();
+        player.doResearch();
+        System.out.println(project.availableProjects.get(1)+" "+project.availableProjects.get(0));
+
     }
 }

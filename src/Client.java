@@ -23,6 +23,14 @@ public class Client extends Person implements GenerateRandomInteger
     }
 
     @Override
+    public Integer intGenerate(Integer bound, Integer minimum)
+    {
+        Random r = new Random();
+        int result = r.nextInt(bound) + minimum;
+        return result;
+    }
+
+    @Override
     public Integer intGenerate(Integer bound)
     {
         Random r = new Random();

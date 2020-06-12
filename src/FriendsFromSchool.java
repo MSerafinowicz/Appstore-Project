@@ -1,4 +1,4 @@
-public class FriendsFromSchool extends EmplyeeProgramist
+public class FriendsFromSchool extends EmployeeProgrammer
 {
     private String kind;
     private Integer punctuality;

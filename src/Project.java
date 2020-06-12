@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Project implements GenerateRandomDouble, GenerateRandomInteger {
     private String projectName;
@@ -9,19 +6,32 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
     private Double cashPenalty;
     private Double salary;
     private Integer paymentTime;
-    private Integer frontEndTime;
-    private Integer backEndTime;
-    private Integer databaseTime;
-    private Integer mobileTime;
-    private Integer wordPressTime;
-    private Integer prestaShopTime;
+    private Integer frontEndTime=0;
+    private Integer backEndTime=0;
+    private Integer databaseTime=0;
+    private Integer mobileTime=0;
+    private Integer wordPressTime=0;
+    private Integer prestaShopTime=0;
     private Integer sumOfWorkTime;
     Integer[] workList = new Integer[]{frontEndTime, backEndTime, databaseTime, mobileTime, wordPressTime, prestaShopTime};
     String[] workListS = new String[]{"frontend time", "backend time", "database time", "mobile time", "wordpress time", " prestashop time"};
 
+    List<Project> availableProjects = new ArrayList<Project>(3);
+    List<Project> unavailableProjects = new ArrayList<Project>(3);
+
+    public void setProjectAvailable(Project project)
+    {
+        availableProjects.add(project);
+        unavailableProjects.remove(project);
+    }
+
+    public void deleteDoneProject(Project project)
+    {
+        availableProjects.remove(project);
+
+    }
 
     String[] projectNamePool = new String[]{"A", "B", "C"};
-    List<Client> clientList = new ArrayList<Client>(5);
 
     @Override
     public Double doubleGenerate() {
@@ -34,6 +44,14 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
     public Integer intGenerate(Integer bound) {
         Random r = new Random();
         int result = r.nextInt(bound);
+        return result;
+    }
+
+    @Override
+    public Integer intGenerate(Integer bound, Integer minimum)
+    {
+        Random r = new Random();
+        int result = r.nextInt(bound) + minimum;
         return result;
     }
 
@@ -61,6 +79,45 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
         return paymentTime;
     }
 
+    public Integer getFrontEndTime() {return frontEndTime;}
+
+    public Integer getDatabaseTime() {return databaseTime;}
+
+    public Integer getBackEndTime() {return backEndTime;}
+
+    public Integer getMobileTime() {return mobileTime;}
+
+    public Integer getWordPressTime() {return wordPressTime;}
+
+    public Integer getPrestaShopTime() {return prestaShopTime;}
+
+    public Integer getSumOfWorkTime() {return sumOfWorkTime;}
+
+
+    public void setFrontEndTime(Integer frontEndTime) {
+        this.frontEndTime = frontEndTime;
+    }
+
+    public void setBackEndTime(Integer backEndTime) {
+        this.backEndTime = backEndTime;
+    }
+
+    public void setDatabaseTime(Integer databaseTime) {
+        this.databaseTime = databaseTime;
+    }
+
+    public void setMobileTime(Integer mobileTime) {
+        this.mobileTime = mobileTime;
+    }
+
+    public void setWordPressTime(Integer wordPressTime) {
+        this.wordPressTime = wordPressTime;
+    }
+
+    public void setPrestaShopTime(Integer prestaShopTime) {
+        this.prestaShopTime = prestaShopTime;
+    }
+
     // easy 3-5 days, medium 6-10, high 11-20
     public enum difficultyLevel {
         easy, medium, high;
@@ -83,6 +140,7 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
             workPart1 = this.workList[intGenerate(5)] = intGenerate(this.sumOfWorkTime);
             workLeft = sumOfWorkTime - workPart1;
             workPart2 = this.workList[intGenerate(5)] = intGenerate(workLeft) + 1;
+            unavailableProjects.add(this);
 
         }
         else if (difficulty == difficultyLevel.medium) {
@@ -97,6 +155,7 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
             workPart2 = this.workList[intGenerate(5)] = intGenerate(workLeft) + 1;
             workLeft = workLeft - workPart2;
             this.workList[intGenerate(5)] = workLeft;
+            unavailableProjects.add(this);
 
         }
         else if (difficulty == difficultyLevel.high) {
@@ -113,15 +172,16 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
             workPart3 = this.workList[2] = intGenerate(workLeft);
             workLeft = workLeft - workPart3;
             this.workList[3] = workLeft;
+            unavailableProjects.add(this);
         }
     }
 
     public void projectTasks() {
         try {
-            etykieta:
+            //etykieta:
             for (int i = 0; i < workList.length; i++) {
-                if (this.workList[i] == null)
-                    continue etykieta;
+                /*if (this.workList[i] == null)
+                    continue etykieta;*/
                 System.out.println(this.workListS[i] + " : " + this.workList[i]);
             }
         } catch (NullPointerException e) {

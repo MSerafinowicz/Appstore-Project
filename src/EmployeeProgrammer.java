@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class EmplyeeProgramist extends Employee implements GenerateRandomInteger,GenerateRandomDouble
+public class EmployeeProgrammer extends Employee implements GenerateRandomInteger,GenerateRandomDouble
 {
     private boolean frontend;
     private boolean backend;
@@ -13,9 +13,9 @@ public class EmplyeeProgramist extends Employee implements GenerateRandomInteger
     private Double salary = doubleGenerate()*3;
     private Double transferFee = 100.0;
 
-    public List<EmplyeeProgramist> lookingForJob = new ArrayList<>(10);
+    public List<EmployeeProgrammer> lookingForJob = new ArrayList<>(10);
 
-    public EmplyeeProgramist() {
+    public EmployeeProgrammer() {
         int x = intGenerate(11);
         if (x > 5) {
             int nameNumber = intGenerate(6);
