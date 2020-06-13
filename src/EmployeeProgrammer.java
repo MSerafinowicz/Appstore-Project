@@ -10,10 +10,8 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
     private boolean mobile;
     private boolean wordpress;
     private boolean prestashop;
-    private Double salary = doubleGenerate()*3;
-    private Double transferFee = 100.0;
+    private Double salary = doubleGenerate()*5;
 
-    public List<EmployeeProgrammer> lookingForJob = new ArrayList<>(10);
 
     public EmployeeProgrammer() {
         int x = intGenerate(11);
@@ -35,7 +33,7 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
             this.mobile = trueFalse.nextBoolean();
             this.wordpress = trueFalse.nextBoolean();
             this.prestashop = trueFalse.nextBoolean();
-
+            this.transferFee = 100.0;
         } else
         {
             int nameNumber = intGenerate(6);
@@ -55,10 +53,16 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
             this.mobile = trueFalse.nextBoolean();
             this.wordpress = trueFalse.nextBoolean();
             this.prestashop = trueFalse.nextBoolean();
+            this.transferFee =100.0;
         }
 
     }
 
+
+    @Override
+    protected Double getSalary() {
+        return this.salary;
+    }
 
     public void showInfo()
     {

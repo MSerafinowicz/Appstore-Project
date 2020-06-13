@@ -1,11 +1,10 @@
-public class Employee extends Person
+public abstract class Employee extends Person
 {
     protected Double transferFee;
     protected Double salary;
 
-    public Double getSalary() {
-        return salary;
-    }
+    protected abstract Double getSalary();
+
 
     public void setSalary(Double salary) {
         this.salary = salary;
@@ -14,4 +13,6 @@ public class Employee extends Person
     public Double getTransferFee() {
         return transferFee;
     }
+
+    protected abstract void showInfo();
 }

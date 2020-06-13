@@ -13,25 +13,25 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
     private Integer wordPressTime=0;
     private Integer prestaShopTime=0;
     private Integer sumOfWorkTime;
+    private boolean isAvailable;
+    private boolean isDone;
+    private Boolean easy=false;
+    private Boolean medium=false;
+    private Boolean hard=false;
     Integer[] workList = new Integer[]{frontEndTime, backEndTime, databaseTime, mobileTime, wordPressTime, prestaShopTime};
     String[] workListS = new String[]{"frontend time", "backend time", "database time", "mobile time", "wordpress time", " prestashop time"};
 
-    List<Project> availableProjects = new ArrayList<Project>(3);
-    List<Project> unavailableProjects = new ArrayList<Project>(3);
 
     public void setProjectAvailable(Project project)
     {
-        availableProjects.add(project);
-        unavailableProjects.remove(project);
+        project.isAvailable = true;
     }
 
-    public void deleteDoneProject(Project project)
+    public void deleteDoneProject()
     {
-        availableProjects.remove(project);
-
+        this.isDone = true;
     }
 
-    String[] projectNamePool = new String[]{"A", "B", "C"};
 
     @Override
     public Double doubleGenerate() {
@@ -53,6 +53,20 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
         Random r = new Random();
         int result = r.nextInt(bound) + minimum;
         return result;
+    }
+
+    public boolean getIsDone() {return isDone;}
+
+    public void setIsDone(Boolean set)
+    {
+        this.isDone = true;
+    }
+
+    public boolean getIsAvailable() {return isAvailable;}
+
+    public void setIsAvailable(Boolean set)
+    {
+        isAvailable = set;
     }
 
     public String getProjectName() {
@@ -118,6 +132,18 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
         this.prestaShopTime = prestaShopTime;
     }
 
+    public Boolean getEasy() {
+        return easy;
+    }
+
+    public Boolean getMedium() {
+        return medium;
+    }
+
+    public Boolean getHard() {
+        return hard;
+    }
+
     // easy 3-5 days, medium 6-10, high 11-20
     public enum difficultyLevel {
         easy, medium, high;
@@ -131,7 +157,7 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
         int workPart3 = 0;
         if (difficulty == difficultyLevel.easy)
         {
-            this.projectName = projectNamePool[intGenerate(3)];
+            //this.projectName = projectNamePool[intGenerate(3)];
             this.deadLine = intGenerate(7) + 5;
             this.cashPenalty = doubleGenerate() * 10;
             this.salary = doubleGenerate() * 15 + 1500;
@@ -140,11 +166,13 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
             workPart1 = this.workList[intGenerate(5)] = intGenerate(this.sumOfWorkTime);
             workLeft = sumOfWorkTime - workPart1;
             workPart2 = this.workList[intGenerate(5)] = intGenerate(workLeft) + 1;
-            unavailableProjects.add(this);
+            isAvailable = false;
+            isDone = false;
+            easy=true;
 
         }
         else if (difficulty == difficultyLevel.medium) {
-            this.projectName = projectNamePool[intGenerate(3)];
+           // this.projectName = projectNamePool[intGenerate(3)];
             this.deadLine = intGenerate(7) + 11;
             this.cashPenalty = doubleGenerate() * 20;
             this.salary = doubleGenerate() * 45 + 4000;
@@ -155,11 +183,13 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
             workPart2 = this.workList[intGenerate(5)] = intGenerate(workLeft) + 1;
             workLeft = workLeft - workPart2;
             this.workList[intGenerate(5)] = workLeft;
-            unavailableProjects.add(this);
+            isAvailable = false;
+            isDone =false;
+            medium = true;
 
         }
         else if (difficulty == difficultyLevel.high) {
-            this.projectName = projectNamePool[intGenerate(3)];
+            //this.projectName = projectNamePool[intGenerate(3)];
             this.deadLine = intGenerate(7) + 21;
             this.cashPenalty = doubleGenerate() * 40;
             this.salary = doubleGenerate() * 100 + 8000;
@@ -172,7 +202,9 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
             workPart3 = this.workList[2] = intGenerate(workLeft);
             workLeft = workLeft - workPart3;
             this.workList[3] = workLeft;
-            unavailableProjects.add(this);
+            isAvailable = false;
+            isDone = false;
+            hard=true;
         }
     }
 

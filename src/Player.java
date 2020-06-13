@@ -13,10 +13,21 @@ public class Player extends Person implements GenerateRandomInteger {
     private Integer research = 0;
     private Integer testsDone;
     Client actualClient;
+    Project project;
+    private Integer zusVisits = 0;
+    private Integer leftMoves = 1;
 
     List<EmployeeProgrammer> employeeProgrammerList = new ArrayList<EmployeeProgrammer>(2);
     List<EmployeeTester> employeeTesterList = new ArrayList<EmployeeTester>(2);
     List<EmployeeSeller> employeeSellerList = new ArrayList<EmployeeSeller>(2);
+
+    public void showProgrammers()
+    {
+        for (EmployeeProgrammer programmer : employeeProgrammerList)
+        {
+            programmer.showInfo();
+        }
+    }
 
     public Player(String name, String surname, Integer age) {
         this.name = name;
@@ -43,6 +54,7 @@ public class Player extends Person implements GenerateRandomInteger {
             employeeProgrammer.setCash(employeeProgrammer.getCash() + employeeProgrammer.getTransferFee());
             this.cash = this.cash - employeeProgrammer.getTransferFee();
             this.employeeProgrammerList.add(employeeProgrammer);
+            this.leftMoves--;
         } else System.out.println("Not enough money to hire that employee");
     }
 
@@ -51,6 +63,7 @@ public class Player extends Person implements GenerateRandomInteger {
             employeeTester.setCash(employeeTester.getCash() + employeeTester.getTransferFee());
             this.cash = this.cash - employeeTester.getTransferFee();
             this.employeeTesterList.add(employeeTester);
+            this.leftMoves--;
         } else System.out.println("Not enough money to hire that employee");
     }
 
@@ -59,22 +72,26 @@ public class Player extends Person implements GenerateRandomInteger {
             employeeSeller.setCash(employeeSeller.getCash() + employeeSeller.getTransferFee());
             this.cash = this.cash - employeeSeller.getTransferFee();
             this.employeeSellerList.add(employeeSeller);
+            this.leftMoves--;
         } else System.out.println("Not enough money to hire that employee");
     }
 
     public void dismissProgrammer(EmployeeProgrammer employeeProgrammer) {
         employeeProgrammer.setCash(employeeProgrammer.getCash() + 300.0);
         employeeProgrammerList.remove(employeeProgrammer);
+        this.leftMoves--;
     }
 
     public void dismissTester(EmployeeTester employeeTester) {
         employeeTester.setCash(employeeTester.getCash() + 300.0);
         employeeTesterList.remove(employeeTester);
+        this.leftMoves--;
     }
 
     public void dismissSeller(EmployeeSeller employeeSeller) {
         employeeSeller.setCash(employeeSeller.getCash() + 300.0);
         employeeSellerList.remove(employeeSeller);
+        this.leftMoves--;
     }
 
     public void playerSkills() {
@@ -82,30 +99,41 @@ public class Player extends Person implements GenerateRandomInteger {
     }
 
     public void playerInfo() {
-        System.out.println(name + " " + surname + " " + age);
+        System.out.println(name + " " + surname + " age: " + age + " cash: " + getCash());
         playerSkills();
     }
 
     public void signContract(Project project, Client client) {
-        if (client.projectList.contains(project)) {
-            project.availableProjects.remove(project);
+        if (client.projectList.contains(project) && project.getIsAvailable()) {
             this.activeProject = client.projectList.get(client.getProjectId(project));
             this.actualClient = client;
             System.out.println("Contract signed with " + client.showInfo() + " to do " + project.getProjectName());
+            this.leftMoves--;
         } else System.out.println("This client has no such project");
     }
 
     public void doResearch() {
-        Project project = new Project(Project.difficultyLevel.valueOf("easy"));
-        Project project1;
-        this.research++;
-        if (this.research == 5) {
-            int index = intGenerate(project.unavailableProjects.size());
-            project1 = project.unavailableProjects.get(index);
-            project1.setProjectAvailable(project1);
-            project1.unavailableProjects.remove(project1);
+        if (research == 5)
+        {
             this.research = 0;
+            System.out.println("You have unlocked new project");
+            this.leftMoves--;
         }
+        else
+        {
+            research++;
+            System.out.println("Your research is "+research+"/5");
+            this.leftMoves--;
+        }
+    }
+
+    public void fightWithZus()
+    {
+        if (this.zusVisits<2) {
+            this.zusVisits++;
+            this.leftMoves--;
+        }
+        else System.out.println("You don't have to go there");
     }
 
     public void doProgramming(String what) {
@@ -113,31 +141,37 @@ public class Player extends Person implements GenerateRandomInteger {
             case "frontend":
                 if (activeProject.getFrontEndTime() >= 1 && this.frontend) {
                     activeProject.setFrontEndTime(activeProject.getFrontEndTime() - 1);
+                    this.leftMoves--;
                 } else
                     break;
             case "backend":
                 if (activeProject.getBackEndTime() >= 1 && this.backend) {
                     activeProject.setBackEndTime(activeProject.getBackEndTime() - 1);
+                    this.leftMoves--;
                 } else
                     break;
             case "database":
                 if (activeProject.getDatabaseTime() >= 1 && this.database) {
                     activeProject.setDatabaseTime(activeProject.getDatabaseTime() - 1);
+                    this.leftMoves--;
                 } else
                     break;
             case "mobile":
                 if (activeProject.getMobileTime() >= 1 && this.mobile) {
                     activeProject.setMobileTime(activeProject.getMobileTime() - 1);
+                    this.leftMoves--;
                 } else
                     break;
             case "wordpress":
                 if (activeProject.getWordPressTime() >= 1 && this.wordpress) {
                     activeProject.setWordPressTime(activeProject.getWordPressTime() - 1);
+                    this.leftMoves--;
                 } else
                     break;
             case "prestashop":
                 if (activeProject.getPrestaShopTime() >= 1 && this.prestashop) {
                     activeProject.setPrestaShopTime(activeProject.getPrestaShopTime() - 1);
+                    this.leftMoves--;
                 } else
                     break;
         }
@@ -145,6 +179,7 @@ public class Player extends Person implements GenerateRandomInteger {
 
     public void doTests() {
         testsDone++;
+        leftMoves--;
     }
 
     public void returnProject() {
@@ -157,23 +192,27 @@ public class Player extends Person implements GenerateRandomInteger {
             {
                 this.cash = this.cash + activeProject.getSalary();
                 actualClient.setCash(actualClient.getCash() - activeProject.getSalary());
-                activeProject.availableProjects.remove(activeProject);
+                activeProject.setIsDone(true);
                 this.activeProject = null;
                 this.actualClient = null;
+                this.leftMoves--;
             } else
                 {
                 if (actualClient.getContractLoss() < 10) {
                     this.activeProject = null;
                     this.actualClient = null;
+                    this.leftMoves--;
                 }
                 else if (actualClient.getNoPenalty() < 10) {
                     this.cash = this.cash + (activeProject.getSalary() / 2);
                     actualClient.setCash(actualClient.getCash() - activeProject.getSalary() / 2);
-                    activeProject.availableProjects.remove(activeProject);
+                    activeProject.setIsDone(true);
                     this.activeProject = null;
                     this.actualClient = null;
+                    this.leftMoves--;
                 }
                 }
+            this.testsDone = 0;
         } else System.out.println("Check project tasks because you have more work to do");
     }
 
@@ -189,5 +228,21 @@ public class Player extends Person implements GenerateRandomInteger {
         Random r = new Random();
         int result = r.nextInt(bound);
         return result;
+    }
+
+    public Integer getZusVisits() {
+        return zusVisits;
+    }
+
+    public void setZusVisits(Integer zusVisits) {
+        this.zusVisits = zusVisits;
+    }
+
+    public Integer getLeftMoves() {
+        return leftMoves;
+    }
+
+    public void setLeftMoves(Integer leftMoves) {
+        this.leftMoves = leftMoves;
     }
 }
