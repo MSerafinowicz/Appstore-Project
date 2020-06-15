@@ -20,6 +20,7 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
     private Boolean hard=false;
     Integer[] workList = new Integer[]{frontEndTime, backEndTime, databaseTime, mobileTime, wordPressTime, prestaShopTime};
     String[] workListS = new String[]{"frontend time", "backend time", "database time", "mobile time", "wordpress time", " prestashop time"};
+    private Client client;
 
 
     public void setProjectAvailable(Project project)
@@ -142,6 +143,14 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
 
     public Boolean getHard() {
         return hard;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     // easy 3-5 days, medium 6-10, high 11-20

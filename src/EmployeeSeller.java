@@ -15,6 +15,6 @@ public class EmployeeSeller extends Employee
 
     @Override
     protected void showInfo() {
-        System.out.println(this.name+" "+this.surname+" "+this.salary);
+        System.out.println(this.name+" "+this.surname+" "+this.salary+" Seller");
     }
 }
