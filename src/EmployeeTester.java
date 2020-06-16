@@ -15,6 +15,6 @@ public class EmployeeTester extends Employee
 
     @Override
     protected void showInfo() {
-        System.out.println(this.name+" "+this.surname+" "+this.salary+" Tester");
+        System.out.println("Tester "+this.name+" "+this.surname+" "+this.salary+" Tester");
     }
 }

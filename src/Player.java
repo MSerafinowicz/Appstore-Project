@@ -20,12 +20,18 @@ public class Player extends Person implements GenerateRandomInteger {
     List<EmployeeProgrammer> employeeProgrammerList = new ArrayList<EmployeeProgrammer>(2);
     List<EmployeeTester> employeeTesterList = new ArrayList<EmployeeTester>(2);
     List<EmployeeSeller> employeeSellerList = new ArrayList<EmployeeSeller>(2);
+    List<Employee> employeeList = new ArrayList<Employee>(2);
 
-    public void showProgrammers()
+    public void showEmployees()
     {
-        for (EmployeeProgrammer programmer : employeeProgrammerList)
+        if (employeeList.isEmpty())
         {
-            programmer.showInfo();
+            System.out.print("You don't have any employees yet");
+        }
+        else
+        for (Employee employee : employeeList)
+        {
+            employee.showInfo();
         }
     }
 
@@ -46,64 +52,29 @@ public class Player extends Person implements GenerateRandomInteger {
         return testsDone;
     }
 
+
     public Project getActiveProject() {return activeProject;}
     public int getResearch() {return research;}
 
-    public void hireProgrammer(EmployeeProgrammer employeeProgrammer) {
+    public void hireEmployee(Employee employee) {
         if (this.leftMoves !=0) {
-            if (this.cash >= employeeProgrammer.getTransferFee()) {
-                employeeProgrammer.setCash(employeeProgrammer.getCash() + employeeProgrammer.getTransferFee());
-                this.cash = this.cash - employeeProgrammer.getTransferFee();
-                this.employeeProgrammerList.add(employeeProgrammer);
+            if (this.cash >= employee.getTransferFee()) {
+                employee.setCash(employee.getCash() + employee.getTransferFee());
+                this.cash = this.cash - employee.getTransferFee();
+                this.employeeList.add(employee);
                 this.leftMoves--;
+                System.out.println("Contract signed with ");
+                employee.showInfo();
             } else System.out.println("Not enough money to hire that employee");
         } else System.out.println("You don't have more moves, you have to end turn");
     }
 
-    public void hireTester(EmployeeTester employeeTester) {
-        if (this.leftMoves !=0) {
-            if (this.cash >= employeeTester.getTransferFee()) {
-                employeeTester.setCash(employeeTester.getCash() + employeeTester.getTransferFee());
-                this.cash = this.cash - employeeTester.getTransferFee();
-                this.employeeTesterList.add(employeeTester);
-                this.leftMoves--;
-            } else System.out.println("Not enough money to hire that employee");
-        } else System.out.println("You don't have more moves, you have to end turn");
-    }
-
-    public void hireSeller(EmployeeSeller employeeSeller) {
-        if (this.leftMoves !=0) {
-            if (this.cash >= employeeSeller.getTransferFee()) {
-                employeeSeller.setCash(employeeSeller.getCash() + employeeSeller.getTransferFee());
-                this.cash = this.cash - employeeSeller.getTransferFee();
-                this.employeeSellerList.add(employeeSeller);
-                this.leftMoves--;
-            } else System.out.println("Not enough money to hire that employee");
-        } else System.out.println("You don't have more moves, you have to end turn");
-    }
-
-    public void dismissProgrammer(EmployeeProgrammer employeeProgrammer) {
+    public void dismissEmployee(Employee employee) {
         if (this.leftMoves!=0) {
-            employeeProgrammer.setCash(employeeProgrammer.getCash() + 300.0);
-            employeeProgrammerList.remove(employeeProgrammer);
+            employee.setCash(employee.getCash() + 300.0);
+            employeeList.remove(employee);
             this.leftMoves--;
-            System.out.println("Employee "+employeeProgrammer.getName()+" "+employeeProgrammer.getSurname()+" dismissed");
-        }else System.out.println("You don't have more moves, you have to end turn");
-    }
-
-    public void dismissTester(EmployeeTester employeeTester) {
-        if (this.leftMoves!=0) {
-            employeeTester.setCash(employeeTester.getCash() + 300.0);
-            employeeTesterList.remove(employeeTester);
-            this.leftMoves--;
-        } else System.out.println("You don't have more moves, you have to end turn");
-    }
-
-    public void dismissSeller(EmployeeSeller employeeSeller) {
-        if (this.leftMoves!=0) {
-            employeeSeller.setCash(employeeSeller.getCash() + 300.0);
-            employeeSellerList.remove(employeeSeller);
-            this.leftMoves--;
+            System.out.println("Employee "+employee.getName()+" "+employee.getSurname()+" dismissed");
         }else System.out.println("You don't have more moves, you have to end turn");
     }
 
@@ -203,6 +174,19 @@ public class Player extends Person implements GenerateRandomInteger {
                 System.out.println("You don't have any active project");
             }
         }else System.out.println("You don't have more moves, you have to end turn");
+    }
+
+    public void planWork()
+    {
+        for (Employee employee : employeeList)
+        {
+            if (employee.getIsProgrammer())
+            {
+                employee.showInfo();
+            }
+            System.out.print("What should be doing today?");
+
+        }
     }
 
     public void doTests() {

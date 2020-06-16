@@ -34,6 +34,7 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
             this.wordpress = trueFalse.nextBoolean();
             this.prestashop = trueFalse.nextBoolean();
             this.transferFee = 100.0;
+            this.setIsProgrammer(true);
         } else
         {
             int nameNumber = intGenerate(6);
@@ -54,6 +55,7 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
             this.wordpress = trueFalse.nextBoolean();
             this.prestashop = trueFalse.nextBoolean();
             this.transferFee =100.0;
+            this.setIsProgrammer(true);
         }
 
     }
@@ -66,7 +68,7 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
 
     public void showInfo()
     {
-        System.out.println(this.getName()+" "+this.getSurname()+" lat: "+this.age+" front-end:"+this.frontend+" backend: "+this.backend+" database: "+this.database+" mobile: "+this.mobile+" wordpress: "+this.wordpress+" pretashop: "+this.prestashop);
+        System.out.println("Programmer "+this.getName()+" "+this.getSurname()+" lat: "+this.age+" front-end:"+this.frontend+" backend: "+this.backend+" database: "+this.database+" mobile: "+this.mobile+" wordpress: "+this.wordpress+" pretashop: "+this.prestashop);
     }
 
     @Override
@@ -91,4 +93,5 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
         double result = r.nextDouble()*20+400;
         return result;
     }
+
 }

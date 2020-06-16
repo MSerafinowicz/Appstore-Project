@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -9,9 +10,10 @@ public class Main
 {
     //region [Necessary Lists]
     static List<Project> projectList = new ArrayList<Project>(16);
-    static List<EmployeeProgrammer> lookingForJobProgrammer = new ArrayList<EmployeeProgrammer>(15);
-    static List<EmployeeTester> lookingForJobTester = new ArrayList<EmployeeTester>(5);
-    static List<EmployeeSeller> lookingForJobSeller = new ArrayList<EmployeeSeller>(5);
+    //static List<EmployeeProgrammer> lookingForJobProgrammer = new ArrayList<EmployeeProgrammer>(15);
+    //static List<EmployeeTester> lookingForJobTester = new ArrayList<EmployeeTester>(5);
+    //static List<EmployeeSeller> lookingForJobSeller = new ArrayList<EmployeeSeller>(5);
+    static List<Employee> lookingForJob = new ArrayList<Employee>(5);
 
     //endregion
 
@@ -20,7 +22,7 @@ public class Main
         String choice;
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("\nProject panel (1)\nEmployee panel (2)\nFight with ZUS (3)\nEnd turn (4)\nExit game (quit)");
+        System.out.println("\nProject panel (1)\nEmployee panel (2)\nFight with ZUS (3)\nEnd turn (4)\nCheck date (5)\nCheck your account balance (6)\nExit game (quit)");
         choice = scanner.nextLine();
         return choice;
     }
@@ -49,19 +51,11 @@ public class Main
     {
         String choice;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\nSearch for employees (1)\nHire Employee (2)\nDismiss Employee (3)\nPlan work for your employees (4)\nBack to menu (0)");
+        System.out.println("\nSearch for employees (1)\nHire Employee (2)\nDismiss Employee (3)\nPlan work for your employees (4)\nSee your employees (5)\nBack to menu (0)");
         choice = scanner.nextLine();
         return choice;
     }
 
-    static String hireMenu()
-    {
-        String choice;
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("\nTo hire programmer (1)\nTo hire tester (2)\nTo hire seller (3)");
-        choice = scanner.nextLine();
-        return choice;
-    }
 
     public static void main(String[] args) throws IOException {
         //region [Game Setting]
@@ -71,11 +65,11 @@ public class Main
         EmployeeProgrammer employeeProgrammer3 = new EmployeeProgrammer();
         EmployeeProgrammer employeeProgrammer4 = new EmployeeProgrammer();
         EmployeeProgrammer employeeProgrammer5 = new EmployeeProgrammer();
-        lookingForJobProgrammer.add(employeeProgrammer1);
-        lookingForJobProgrammer.add(employeeProgrammer2);
-        lookingForJobProgrammer.add(employeeProgrammer3);
-        lookingForJobProgrammer.add(employeeProgrammer4);
-        lookingForJobProgrammer.add(employeeProgrammer5);
+        lookingForJob.add(employeeProgrammer1);
+        lookingForJob.add(employeeProgrammer2);
+        lookingForJob.add(employeeProgrammer3);
+        lookingForJob.add(employeeProgrammer4);
+        lookingForJob.add(employeeProgrammer5);
         FriendsFromSchool friend1 = new FriendsFromSchool();
         FriendsFromSchool friend2 = new FriendsFromSchool();
         FriendsFromSchool friend3 = new FriendsFromSchool();
@@ -180,7 +174,7 @@ public class Main
         System.out.println("Your goal is to finish 3 'hard' projects or end with bigger cash balance than on start\n Have fun!\nAvailable projects: ");
         showAvailableProjects();
         System.out.println("Looking for a job");
-        showUnemployedProgrammer();
+        showUnemployed();
 
         Label mainMenu = new Label("\nProject panel (1)\nEmployee panel (2)\nFight with ZUS (3)\nEnd turn (4)");
 
@@ -221,8 +215,13 @@ public class Main
                                 System.in.read();
                                 break Menu;
                             case "6":
-                                //System.out.println("Type project name to sign");
-                                //player.signContract();
+                                Project project;
+                                int index;
+                                Scanner scanner = new Scanner(System.in);
+                                System.out.println("Which project from search you want to take?");
+                                System.out.println("Type (1) for first, (2) for second etc.");
+                                index = scanner.nextInt();
+                                player.signContract(projectList.get(index-1));
                                 break Menu;
                             case "7":
                                 player.returnProject();
@@ -237,40 +236,35 @@ public class Main
                         switch (employeeMenu())
                         {
                             case "1":
-                                showUnemployedProgrammer();
+                                showUnemployed();
                                 System.out.println("\nYou will be returned to menu after any key");
                                 System.in.read();
                                 break Menu;
                             case "2":
-                                switch (hireMenu())
-                                {
-                                    case "1":
-                                        String name;
-                                        String surname;
-                                        int age;
-
-                                        System.out.println("Please type in name, surname and age of programmer that you want to hire");
-                                        Scanner nameScanner = new Scanner(System.in);
-                                        Scanner surnameScanner = new Scanner(System.in);
-                                        Scanner ageScanner = new Scanner(System.in);
-                                        name = nameScanner.next();
-                                        surname = surnameScanner.next();
-                                        age = ageScanner.nextInt();
-                                        for (EmployeeProgrammer employee : lookingForJobProgrammer)
-                                        {
-                                            if (employee.getName()==name && employee.getSurname() == surname && employee.getAge() == age)
-                                            {
-                                                player.hireProgrammer(employee);
-                                            }
-                                        }
-                                        System.out.println("There is no "+name+" "+surname+" aged "+age+" looking for job");
-                                        System.out.println("\nYou will be returned to menu after any key");
-                                        System.in.read();
-                                        break Menu;
-                                }
+                                Employee employee;
+                                int index;
+                                Scanner scanner = new Scanner(System.in);
+                                System.out.println("Who, from search for employees, do you want to hire?");
+                                System.out.println("Type (1) for first person, (2) for second etc.");
+                                index = scanner.nextInt();
+                                player.hireEmployee(lookingForJob.get(index-1));
+                                break Menu;
                             case "3":
+                                Employee employeeToDismiss;
+                                int indexDis;
+                                Scanner scan = new Scanner(System.in);
+                                System.out.print("Who, from your employee list, do you want to dismiss?");
+                                System.out.println("Type (1) for first person, (2) for second etc.");
+                                indexDis = scan.nextInt();
+                                player.dismissEmployee(player.employeeList.get(indexDis-1));
                                 break Menu;
                             case "4":
+                                // type who is doing what
+                                break Menu;
+                            case "5":
+                                player.showEmployees();
+                                System.out.println("\nYou will be returned to menu after any key");
+                                System.in.read();
                                 break Menu;
                             case "0":
                                 break Menu;
@@ -281,6 +275,17 @@ public class Main
                         player.fightWithZus();
                         break Menu;
                     case "4":
+                        calendar.add(Calendar.DAY_OF_MONTH,1);
+                        player.setLeftMoves(1);
+                        System.out.print("Skipping to next day");
+                        System.out.println("\nYou will be returned to menu after any key");
+                        System.in.read();
+                        break Menu;
+                    case "5":
+                        System.out.print(calendar.getTime()+"\n");
+                        break Menu;
+                    case "6":
+                        System.out.print(player.getCash()+"\n");
                         break Menu;
                     case "quit":
                         break Exit;
@@ -307,11 +312,12 @@ public class Main
         }
     }
 
-    private static void showUnemployedProgrammer()
+    private static void showUnemployed()
     {
-        System.out.println("Programmers looking for job");
-        for (EmployeeProgrammer employee : lookingForJobProgrammer)
+        System.out.println("Employees looking for job");
+        for (Employee employee : lookingForJob)
         {
+            System.out.print("\n");
             employee.showInfo();
         }
     }
