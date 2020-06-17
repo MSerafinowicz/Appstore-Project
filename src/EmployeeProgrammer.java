@@ -11,7 +11,26 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
     private boolean wordpress;
     private boolean prestashop;
     private Double salary = doubleGenerate()*5;
+    private final boolean isProgrammer = true;
 
+    public boolean isFrontend () {return this.frontend;}
+    public boolean isBackend () {return this.backend;}
+    public boolean isDatabase () {return this.database;}
+
+    public boolean isPrestashop() {
+        return prestashop;
+    }
+
+    @Override
+    public void sellerResearch() {
+
+    }
+
+    public boolean isMobile () {return this.mobile;}
+
+    public boolean isWordpress() {
+        return wordpress;
+    }
 
     public EmployeeProgrammer() {
         int x = intGenerate(11);
@@ -33,7 +52,6 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
             this.mobile = trueFalse.nextBoolean();
             this.wordpress = trueFalse.nextBoolean();
             this.prestashop = trueFalse.nextBoolean();
-            this.transferFee = 100.0;
             this.setIsProgrammer(true);
         } else
         {
@@ -54,7 +72,6 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
             this.mobile = trueFalse.nextBoolean();
             this.wordpress = trueFalse.nextBoolean();
             this.prestashop = trueFalse.nextBoolean();
-            this.transferFee =100.0;
             this.setIsProgrammer(true);
         }
 
@@ -94,4 +111,7 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
         return result;
     }
 
+    public boolean isProgrammer() {
+        return isProgrammer;
+    }
 }

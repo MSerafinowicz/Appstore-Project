@@ -6,7 +6,7 @@ import java.util.Random;
 public class Client extends Person implements GenerateRandomInteger
 {
     Project project;
-    private Double cash = 100000.0;
+    private Double cash;
 
     // the result will depend if the number drawn is less or bigger than 10, smaller means 0 penalties
     private Integer paymentDelay;
@@ -66,6 +66,7 @@ public class Client extends Person implements GenerateRandomInteger
                 this.paymentDelay = intGenerate(14);
                 this.noPenalty = intGenerate(13);
                 this.contractLoss = 1;
+                this.cash = 100000.0;
                 break;
             case Strict:
                 this.name = namePoolFemale[intGenerate(6)];
@@ -74,6 +75,7 @@ public class Client extends Person implements GenerateRandomInteger
                 this.paymentDelay = 11;
                 this.noPenalty = 11;
                 this.contractLoss = intGenerate(16);
+                this.cash = 100000.0;
                 break;
             case skrwl:
                 this.name = namePoolMale[intGenerate(6)];
@@ -82,6 +84,7 @@ public class Client extends Person implements GenerateRandomInteger
                 this.paymentDelay = intGenerate(14);
                 this.noPenalty = 11;
                 this.contractLoss = 11;
+                this.cash = 100000.0;
         }
     }
 

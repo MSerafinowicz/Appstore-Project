@@ -1,22 +1,28 @@
+import jdk.jfr.Frequency;
+
 import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.channels.CancelledKeyException;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.CancellationException;
 
 public class Main
 {
     //region [Necessary Lists]
-    static List<Project> projectList = new ArrayList<Project>(16);
-    //static List<EmployeeProgrammer> lookingForJobProgrammer = new ArrayList<EmployeeProgrammer>(15);
-    //static List<EmployeeTester> lookingForJobTester = new ArrayList<EmployeeTester>(5);
-    //static List<EmployeeSeller> lookingForJobSeller = new ArrayList<EmployeeSeller>(5);
-    static List<Employee> lookingForJob = new ArrayList<Employee>(5);
+    public static List<Project> projectList = new ArrayList<Project>(16);
+    public static List<Project> availableProjectList = new ArrayList<Project>(10);
+    public static List<Employee> lookingForJob = new ArrayList<Employee>(5);
+    public static List<Employee> invisibleEmployees = new ArrayList<Employee>(10);
+    public static List<FriendsFromSchool> friendsList = new ArrayList<FriendsFromSchool>();
 
     //endregion
 
+    //region [Menu]
     static String choiceMenu()
     {
         String choice;
@@ -32,7 +38,7 @@ public class Main
         String choice;
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("\nActive project (1)\nDo programming yourself (2)\nDo research (3)\nDo tests (4)\nAvailable projects (5)\nSign contract (6)\nReturn project (7)\nBack to menu (0)");
+        System.out.println("\nActive project (1)\nDo programming yourself (2)\nDo research (3)\nDo tests (4)\nAvailable projects (5)\nSign contract (6)\nReturn project (7)\nAsk friend for help (8)\nBack to menu (0)");
         choice = scanner.nextLine();
         return choice;
     }
@@ -55,24 +61,38 @@ public class Main
         choice = scanner.nextLine();
         return choice;
     }
+    //endregion
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException  {
         //region [Game Setting]
         Player player = new Player("Marcin", "Serafinowicz", 21);
         EmployeeProgrammer employeeProgrammer1 = new EmployeeProgrammer();
         EmployeeProgrammer employeeProgrammer2 = new EmployeeProgrammer();
         EmployeeProgrammer employeeProgrammer3 = new EmployeeProgrammer();
         EmployeeProgrammer employeeProgrammer4 = new EmployeeProgrammer();
+        invisibleEmployees.add(employeeProgrammer4);
         EmployeeProgrammer employeeProgrammer5 = new EmployeeProgrammer();
+        invisibleEmployees.add(employeeProgrammer5);
+        EmployeeSeller employeeSeller1 = new EmployeeSeller();
+        invisibleEmployees.add(employeeSeller1);
+        EmployeeSeller employeeSeller2 = new EmployeeSeller();
+        invisibleEmployees.add(employeeSeller2);
+        EmployeeTester employeeTester1 = new EmployeeTester();
+        invisibleEmployees.add(employeeTester1);
+        EmployeeTester employeeTester2 = new EmployeeTester();
+        invisibleEmployees.add(employeeTester2);
+
+        lookingForJob.add(employeeSeller1);
         lookingForJob.add(employeeProgrammer1);
         lookingForJob.add(employeeProgrammer2);
         lookingForJob.add(employeeProgrammer3);
-        lookingForJob.add(employeeProgrammer4);
-        lookingForJob.add(employeeProgrammer5);
         FriendsFromSchool friend1 = new FriendsFromSchool();
+        friendsList.add(friend1);
         FriendsFromSchool friend2 = new FriendsFromSchool();
+        friendsList.add(friend2);
         FriendsFromSchool friend3 = new FriendsFromSchool();
+        friendsList.add(friend3);
         friend1.drawKind();
         friend2.drawKind();
         friend3.drawKind();
@@ -125,6 +145,9 @@ public class Main
         project1.setIsAvailable(true);
         project2.setIsAvailable(true);
         project6.setIsAvailable(true);
+        availableProjectList.add(project1);
+        availableProjectList.add(project2);
+        availableProjectList.add(project6);
         Client client1 = new Client(Client.clientType.Chill);
         Client client2 = new Client(Client.clientType.Strict);
         Client client3 = new Client(Client.clientType.skrwl);
@@ -164,6 +187,7 @@ public class Main
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(2020, 01, 01);
+        Calendar calendarHelper = calendar;
         System.out.println(calendar.get(Calendar.DAY_OF_WEEK));
         String choice = null;
 
@@ -171,10 +195,7 @@ public class Main
         player.playerInfo();
         System.out.println("\nYour friends are\n" + friend1.getName() + " " + friend1.getKind() + "\n" + friend2.getName() + " " + friend2.getKind() + "\n" + friend3.getName() + " " + friend3.getKind());
         System.out.println("\nThere are 15 projects in game, you will see only 3 now. Rest you have to find by doing research or hiring seller");
-        System.out.println("Your goal is to finish 3 'hard' projects or end with bigger cash balance than on start\n Have fun!\nAvailable projects: ");
-        showAvailableProjects();
-        System.out.println("Looking for a job");
-        showUnemployed();
+        System.out.println("Your goal is to finish 3 'hard' projects or end with bigger cash balance than on start\n Have fun!");
 
         Label mainMenu = new Label("\nProject panel (1)\nEmployee panel (2)\nFight with ZUS (3)\nEnd turn (4)");
 
@@ -215,17 +236,30 @@ public class Main
                                 System.in.read();
                                 break Menu;
                             case "6":
-                                Project project;
+                                Calendar varDeadLine = Calendar.getInstance();
+                                varDeadLine.setTime(calendar.getTime());
                                 int index;
                                 Scanner scanner = new Scanner(System.in);
                                 System.out.println("Which project from search you want to take?");
                                 System.out.println("Type (1) for first, (2) for second etc.");
                                 index = scanner.nextInt();
-                                player.signContract(projectList.get(index-1));
+                                player.signContract(availableProjectList.get(index-1));
+                                varDeadLine.add(varDeadLine.DAY_OF_MONTH,player.getActiveProject().getDeadlineTime());
+                                player.getActiveProject().getDeadLine().setTime(varDeadLine.getTime());
                                 break Menu;
                             case "7":
                                 player.returnProject();
                                 System.out.println("Project returned");
+                                break Menu;
+                            case "8":
+                                Scanner scanner1 = new Scanner(System.in);
+                                Scanner scanner2 = new Scanner(System.in);
+                                showFriends();
+                                System.out.print("\nType (1) to ask first friend, (2) for second, (3) for third\n");
+                                Integer friendIndex = scanner2.nextInt();
+                                System.out.print("\nTo do frontend type (frontend), backend (backend) and similarly for database, mobile, wordpress, prestashop\n");
+                                String what = scanner1.nextLine();
+                                player.askFriend(friendIndex-1,what);
                                 break Menu;
                             case "0":
                                 break Menu;
@@ -259,7 +293,7 @@ public class Main
                                 player.dismissEmployee(player.employeeList.get(indexDis-1));
                                 break Menu;
                             case "4":
-                                // type who is doing what
+                                player.planWork();
                                 break Menu;
                             case "5":
                                 player.showEmployees();
@@ -275,11 +309,38 @@ public class Main
                         player.fightWithZus();
                         break Menu;
                     case "4":
-                        calendar.add(Calendar.DAY_OF_MONTH,1);
+                        calendarHelper.add(Calendar.DAY_OF_MONTH,1);
+                        if (calendarHelper.get(calendarHelper.MONTH) > calendar.get(calendar.MONTH))
+                        {
+                            System.out.print("Next month incoming, tax office remembered you and took 10% of your income");
+                            System.out.print("You also remembered about your employees");
+                            player.setCash(player.getCash()-player.getIncome()*1/10);
+                            player.setIncome(0.0);
+                            for (Employee employee : player.employeeList)
+                            {
+                                player.setCash(player.getCash()-employee.getSalary());
+                                employee.setCash(employee.getCash()+employee.getSalary());
+                            }
+                            System.out.print("After all taxes and salaries your budget is: "+player.getCash());
+                        }
                         player.setLeftMoves(1);
                         System.out.print("Skipping to next day");
                         System.out.println("\nYou will be returned to menu after any key");
                         System.in.read();
+                        try {
+                            if (player.getActiveProject().getDeadLine() == calendarHelper) {
+                                System.out.print("You did't finish project before deadline, you lost it and lost half of it's salary as penalty");
+                                player.getActiveProject().setSalary(player.getActiveProject().getSalary()/2);
+                            }
+                        }catch (NullPointerException e) {}
+                        //make it work
+                        if (calendarHelper.get(calendarHelper.DAY_OF_MONTH)%5 == 0) {
+                            for (Employee seller : player.employeeSellerList) {
+                                seller.sellerResearch();
+                            }
+                        }
+                        calendar = calendarHelper;
+                        System.out.print("\n"+calendar.getTime()+"\n");
                         break Menu;
                     case "5":
                         System.out.print(calendar.getTime()+"\n");
@@ -297,17 +358,19 @@ public class Main
         }
 
 
+
     //region [Lists helpers]
     private static void showAvailableProjects() {
-        for (Project project : projectList)
+        for (Project project : availableProjectList)
         {
             if (project.getIsAvailable() && !project.getIsDone())
             {
                 System.out.println(project.getProjectName()+" is hard = "+project.getHard());
                 System.out.println("Project by: "+project.getClient().getName()+" "+project.getClient().getSurname());
                 project.projectTasks();
-                System.out.println(project.getSalary());
-                System.out.println("\n\n");
+                System.out.println("\nSalary: "+project.getSalary());
+                System.out.print("Days for finish: "+project.getDeadlineTime());
+                System.out.println("\n");
             }
         }
     }
@@ -319,6 +382,15 @@ public class Main
         {
             System.out.print("\n");
             employee.showInfo();
+        }
+    }
+
+    private static void showFriends()
+    {
+        for (FriendsFromSchool friend : friendsList)
+        {
+            System.out.print("\n");
+            friend.showInfo();
         }
     }
 

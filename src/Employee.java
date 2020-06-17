@@ -1,8 +1,10 @@
 public abstract class Employee extends Person
 {
-    protected Double transferFee;
+    protected Double transferFee =100.0;
     protected Double salary;
     protected boolean isProgramer;
+    protected boolean isTester;
+    protected boolean isSeller;
 
     protected abstract Double getSalary();
 
@@ -21,4 +23,18 @@ public abstract class Employee extends Person
     }
 
     protected abstract void showInfo();
+
+    public abstract boolean isFrontend();
+
+    public abstract boolean isBackend();
+
+    public abstract boolean isDatabase();
+
+    public abstract boolean isMobile();
+
+    public abstract boolean isWordpress();
+
+    public abstract boolean isPrestashop();
+
+    public abstract void sellerResearch();
 }

@@ -11,22 +11,22 @@ public class FriendsFromSchool extends EmployeeProgrammer
         if (cube <=2)
         {
             this.kind = "Best student";
-            this.punctuality = 10;
-            this.precision = 10;
+            this.punctuality = intGenerate(5);
+            this.precision = intGenerate(5);
             this.price = 300.0;
         }
         if (cube>2 && cube <=4)
         {
             this.kind = "Medium student";
-            this.punctuality = 10;
-            this.precision = 9;
+            this.punctuality = intGenerate(5);
+            this.precision = intGenerate(12);
             this.price = 250.0;
         }
         if (cube > 4 && cube <=6)
         {
             this.kind = "The guy who knows everything best";
-            this.punctuality = 8;
-            this.precision = 8;
+            this.punctuality = intGenerate(13);
+            this.precision = intGenerate(13);
             this.price = 150.0;
         }
     }
@@ -45,5 +45,10 @@ public class FriendsFromSchool extends EmployeeProgrammer
 
     public Double getPrice() {
         return price;
+    }
+
+    @Override
+    public void showInfo() {
+        System.out.print(getName()+" "+getSurname());
     }
 }

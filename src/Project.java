@@ -1,26 +1,26 @@
+import java.io.CharArrayReader;
 import java.util.*;
 
 public class Project implements GenerateRandomDouble, GenerateRandomInteger {
     private String projectName;
-    private Integer deadLine;
+    private Integer deadLineTime;
     private Double cashPenalty;
     private Double salary;
     private Integer paymentTime;
-    private Integer frontEndTime=0;
-    private Integer backEndTime=0;
-    private Integer databaseTime=0;
-    private Integer mobileTime=0;
-    private Integer wordPressTime=0;
-    private Integer prestaShopTime=0;
+    private Integer frontEndTime;
+    private Integer backEndTime;
+    private Integer databaseTime;
+    private Integer mobileTime;
+    private Integer wordPressTime;
+    private Integer prestaShopTime;
     private Integer sumOfWorkTime;
     private boolean isAvailable;
     private boolean isDone;
     private Boolean easy=false;
     private Boolean medium=false;
     private Boolean hard=false;
-    Integer[] workList = new Integer[]{frontEndTime, backEndTime, databaseTime, mobileTime, wordPressTime, prestaShopTime};
-    String[] workListS = new String[]{"frontend time", "backend time", "database time", "mobile time", "wordpress time", " prestashop time"};
     private Client client;
+    private Calendar deadLine = Calendar.getInstance();
 
 
     public void setProjectAvailable(Project project)
@@ -41,10 +41,11 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
         return result;
     }
 
+
     @Override
     public Integer intGenerate(Integer bound) {
         Random r = new Random();
-        int result = r.nextInt(bound);
+        Integer result = r.nextInt(bound);
         return result;
     }
 
@@ -55,6 +56,8 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
         int result = r.nextInt(bound) + minimum;
         return result;
     }
+
+    public Calendar getDeadLine() {return this.deadLine;}
 
     public boolean getIsDone() {return isDone;}
 
@@ -78,9 +81,7 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
         this.projectName = projectName;
     }
 
-    public Integer getDeadLine() {
-        return deadLine;
-    }
+    public Integer getDeadlineTime() {return this.deadLineTime;}
 
     public Double getCashPenalty() {
         return cashPenalty;
@@ -108,6 +109,8 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
 
     public Integer getSumOfWorkTime() {return sumOfWorkTime;}
 
+    public void setDeadLine(Calendar calendar) {this.deadLine = calendar;}
+
 
     public void setFrontEndTime(Integer frontEndTime) {
         this.frontEndTime = frontEndTime;
@@ -132,6 +135,8 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
     public void setPrestaShopTime(Integer prestaShopTime) {
         this.prestaShopTime = prestaShopTime;
     }
+
+    public void setSalary (Double salary) {this.salary = salary;}
 
     public Boolean getEasy() {
         return easy;
@@ -160,38 +165,75 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
 
     //Random generator based on project's difficulty
     public Project(difficultyLevel difficulty) {
-        int workLeft = 0;
-        int workPart1 = 0;
-        int workPart2 = 0;
-        int workPart3 = 0;
+        int workLeft;
+
         if (difficulty == difficultyLevel.easy)
         {
             //this.projectName = projectNamePool[intGenerate(3)];
-            this.deadLine = intGenerate(7) + 5;
+            this.frontEndTime = 0;
+            this.backEndTime = 0;
+            this.databaseTime = 0;
+            this.mobileTime = 0;
+            this.wordPressTime = 0;
+            this.prestaShopTime = 0;
+            this.deadLineTime = intGenerate(7) + 5;
             this.cashPenalty = doubleGenerate() * 10;
             this.salary = doubleGenerate() * 15 + 1500;
             this.paymentTime = intGenerate(3) + 1;
             this.sumOfWorkTime = intGenerate(4) + 2;
-            workPart1 = this.workList[intGenerate(5)] = intGenerate(this.sumOfWorkTime);
-            workLeft = sumOfWorkTime - workPart1;
-            workPart2 = this.workList[intGenerate(5)] = intGenerate(workLeft) + 1;
+            this.frontEndTime = intGenerate(this.sumOfWorkTime)+1;
+            workLeft = this.sumOfWorkTime - frontEndTime;
+            if (workLeft >= 1)
+            {
+                this.backEndTime = intGenerate(workLeft);
+                workLeft = workLeft - this.backEndTime;
+                if (workLeft >=1)
+                {
+                    this.databaseTime = intGenerate(workLeft);
+                    workLeft = workLeft - this.databaseTime;
+                    if (workLeft >=1)
+                    {
+                        this.prestaShopTime = workLeft;
+                    }
+                }
+            }
             isAvailable = false;
             isDone = false;
             easy=true;
-
         }
         else if (difficulty == difficultyLevel.medium) {
            // this.projectName = projectNamePool[intGenerate(3)];
-            this.deadLine = intGenerate(7) + 11;
+            this.frontEndTime = 0;
+            this.backEndTime = 0;
+            this.databaseTime = 0;
+            this.mobileTime = 0;
+            this.wordPressTime = 0;
+            this.prestaShopTime = 0;
+            this.deadLineTime = intGenerate(7) + 11;
             this.cashPenalty = doubleGenerate() * 20;
             this.salary = doubleGenerate() * 45 + 4000;
             this.paymentTime = intGenerate(5) + 3;
             this.sumOfWorkTime = intGenerate(4) + 7;
-            workPart1 = this.workList[intGenerate(5)] = intGenerate(this.sumOfWorkTime);
-            workLeft = this.sumOfWorkTime - workPart1;
-            workPart2 = this.workList[intGenerate(5)] = intGenerate(workLeft) + 1;
-            workLeft = workLeft - workPart2;
-            this.workList[intGenerate(5)] = workLeft;
+            this.backEndTime = intGenerate(sumOfWorkTime)+2;
+            workLeft = this.sumOfWorkTime - this.backEndTime;
+            if (workLeft >=1) {
+                this.databaseTime = intGenerate(workLeft);
+                workLeft = workLeft - this.databaseTime;
+                if (workLeft >=1)
+                {
+                    this.frontEndTime= intGenerate(workLeft);
+                    workLeft = workLeft-this.frontEndTime;
+                    if (workLeft >=1)
+                    {
+                        this.mobileTime = intGenerate(workLeft);
+                        workLeft = workLeft - this.mobileTime;
+                        if (workLeft >=1)
+                        {
+                            this.wordPressTime = workLeft;
+                        }
+                    }
+                }
+            }
             isAvailable = false;
             isDone =false;
             medium = true;
@@ -199,18 +241,43 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
         }
         else if (difficulty == difficultyLevel.high) {
             //this.projectName = projectNamePool[intGenerate(3)];
-            this.deadLine = intGenerate(7) + 21;
+            this.frontEndTime = 0;
+            this.backEndTime = 0;
+            this.databaseTime = 0;
+            this.mobileTime = 0;
+            this.wordPressTime = 0;
+            this.prestaShopTime = 0;
+            this.deadLineTime = intGenerate(7) + 21;
             this.cashPenalty = doubleGenerate() * 40;
             this.salary = doubleGenerate() * 100 + 8000;
             this.paymentTime = intGenerate(5) + 7;
             this.sumOfWorkTime = intGenerate(8) + 12;
-            workPart1 = this.workList[0] = intGenerate(sumOfWorkTime);
-            workLeft = sumOfWorkTime - workPart1;
-            workPart2 = this.workList[1] = intGenerate(workLeft);
-            workLeft = workLeft - workPart2;
-            workPart3 = this.workList[2] = intGenerate(workLeft);
-            workLeft = workLeft - workPart3;
-            this.workList[3] = workLeft;
+            this.backEndTime = intGenerate(this.sumOfWorkTime);
+            workLeft = this.sumOfWorkTime - this.backEndTime;
+            if (workLeft >=1)
+            {
+                this.databaseTime = intGenerate(workLeft);
+                workLeft = workLeft - this.databaseTime;
+                if (workLeft >=1)
+                {
+                    this.frontEndTime= intGenerate(workLeft);
+                    workLeft = workLeft-this.frontEndTime;
+                    if (workLeft >=1)
+                    {
+                        this.mobileTime = intGenerate(workLeft);
+                        workLeft = workLeft - this.mobileTime;
+                        if (workLeft>=1)
+                        {
+                            this.prestaShopTime = intGenerate(workLeft);
+                            workLeft = workLeft - this.prestaShopTime;
+                            if (workLeft>=1)
+                            {
+                                this.wordPressTime = workLeft;
+                            }
+                        }
+                    }
+                }
+            }
             isAvailable = false;
             isDone = false;
             hard=true;
@@ -218,15 +285,7 @@ public class Project implements GenerateRandomDouble, GenerateRandomInteger {
     }
 
     public void projectTasks() {
-        try {
-            //etykieta:
-            for (int i = 0; i < workList.length; i++) {
-                /*if (this.workList[i] == null)
-                    continue etykieta;*/
-                System.out.println(this.workListS[i] + " : " + this.workList[i]);
-            }
-        } catch (NullPointerException e) {
-        }
-        ;
+        System.out.print("\nFrontend: "+this.frontEndTime+"\nBackend: "+this.backEndTime+
+                "\nDatabase: "+this.databaseTime+"\nMobile: "+this.mobileTime+"\nWordpress: "+this.wordPressTime+"\nPrestashop: "+this.prestaShopTime);
     }
 }
