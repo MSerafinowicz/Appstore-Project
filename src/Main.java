@@ -28,7 +28,7 @@ public class Main
         String choice;
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("\nProject panel (1)\nEmployee panel (2)\nFight with ZUS (3)\nEnd turn (4)\nCheck date (5)\nCheck your account balance (6)\nExit game (quit)");
+        System.out.println("\nProject panel (1)\nEmployee panel (2)\nFight with ZUS (3)\nEnd turn (4)\nCheck date (5)\nCheck your account balance (6)\nCheck your data (7)\nExit game (quit)");
         choice = scanner.nextLine();
         return choice;
     }
@@ -64,13 +64,14 @@ public class Main
     //endregion
 
 
-    public static void main(String[] args) throws IOException  {
+    public static void main(String[] args) throws IOException {
         //region [Game Setting]
-        Player player = new Player("Marcin", "Serafinowicz", 21);
         EmployeeProgrammer employeeProgrammer1 = new EmployeeProgrammer();
         EmployeeProgrammer employeeProgrammer2 = new EmployeeProgrammer();
         EmployeeProgrammer employeeProgrammer3 = new EmployeeProgrammer();
         EmployeeProgrammer employeeProgrammer4 = new EmployeeProgrammer();
+        EmployeeProgrammer employeeProgrammer6 = new EmployeeProgrammer();
+        invisibleEmployees.add(employeeProgrammer6);
         invisibleEmployees.add(employeeProgrammer4);
         EmployeeProgrammer employeeProgrammer5 = new EmployeeProgrammer();
         invisibleEmployees.add(employeeProgrammer5);
@@ -186,178 +187,529 @@ public class Main
         project15.setClient(client3);
 
         Calendar calendar = Calendar.getInstance();
+        Calendar calendar2 = Calendar.getInstance();
         calendar.set(2020, 01, 01);
+        calendar2.set(2020, 01, 01);
         Calendar calendarHelper = calendar;
-        System.out.println(calendar.get(Calendar.DAY_OF_WEEK));
+        Calendar calendarHelper2 = calendar;
         String choice = null;
+        String name;
+        String name2;
+        String surname;
+        String surname2;
+        Integer age;
+        Integer age2;
+        Scanner modeSelection = new Scanner(System.in);
+        String mode;
 
-        System.out.println("Welcome to appstore game\n Your created character is: ");
-        player.playerInfo();
-        System.out.println("\nYour friends are\n" + friend1.getName() + " " + friend1.getKind() + "\n" + friend2.getName() + " " + friend2.getKind() + "\n" + friend3.getName() + " " + friend3.getKind());
+        System.out.println("Do you want to play solo or pvp? Type (solo) or (pvp)");
+        mode = modeSelection.nextLine();
+
+        System.out.println("Welcome to appstore game\n");
+        System.out.println("\nYour friends are\n");
+        showFriends();
         System.out.println("\nThere are 15 projects in game, you will see only 3 now. Rest you have to find by doing research or hiring seller");
         System.out.println("Your goal is to finish 3 'hard' projects or end with bigger cash balance than on start\n Have fun!");
-
-        Label mainMenu = new Label("\nProject panel (1)\nEmployee panel (2)\nFight with ZUS (3)\nEnd turn (4)");
-
-        Label projectPanel = new Label("\nActive project (1)\nDo programming yourself (2)\nDo research (3)\nDo tests (4)\nSign contract (5)\nReturn project (6)\nBack to menu (7");
-
-        Label employeePanel = new Label("Search for employees (1)\nSee your employees (2)\nHire employee (3)\nDismiss employee (4)\nMake work plan (5)\nBack to menu (6)");
         //endregion
 
-        //region [Game Handling]
-            Exit: for (;;)
-            {
-                Menu: switch (choiceMenu())
-                {
 
-                    case "1":
-                        switch (projectMenu())
-                        {
+        //region [Game Handling]
+        Quit:
+        switch (mode) {
+            case "solo":
+                System.out.println("Type name, surname and your age\n");
+                name = modeSelection.nextLine();
+                surname = modeSelection.nextLine();
+                age = modeSelection.nextInt();
+                Player player = new Player(name, surname, age);
+
+                Exit:
+                for (; ; ) {
+                    Menu:
+                    switch (choiceMenu()) {
+
+                        case "1":
+                            switch (projectMenu()) {
+                                case "1":
+                                    try {
+                                        System.out.println(player.getActiveProject().getProjectName());
+                                        player.getActiveProject().projectTasks();
+                                    } catch (NullPointerException e) {
+                                        System.out.println("You don't have any active project now");
+                                    }
+                                    System.out.println("\nYou will be returned to menu after any key");
+                                    System.in.read();
+                                    break Menu;
+                                case "2":
+                                    player.doProgramming(programmingMenu());
+                                    break Menu;
+                                case "3":
+                                    player.doResearch();
+                                    break Menu;
+                                case "4":
+                                    player.doTests();
+                                    break Menu;
+                                case "5":
+                                    showAvailableProjects();
+                                    System.out.println("\nYou will be returned to menu after any key");
+                                    System.in.read();
+                                    break Menu;
+                                case "6":
+                                    Calendar varDeadLine = Calendar.getInstance();
+                                    varDeadLine.setTime(calendar.getTime());
+                                    int index;
+                                    Scanner scanner = new Scanner(System.in);
+                                    System.out.println("Which project from search you want to take?");
+                                    System.out.println("Type (1) for first, (2) for second etc.");
+                                    index = scanner.nextInt();
+                                    player.signContract(availableProjectList.get(index - 1));
+                                    varDeadLine.add(varDeadLine.DAY_OF_MONTH, player.getActiveProject().getDeadlineTime());
+                                    player.getActiveProject().getDeadLine().setTime(varDeadLine.getTime());
+                                    break Menu;
+                                case "7":
+                                    player.returnProject();
+                                    System.out.println("Project returned");
+                                    break Menu;
+                                case "8":
+                                    Scanner scanner1 = new Scanner(System.in);
+                                    Scanner scanner2 = new Scanner(System.in);
+                                    showFriends();
+                                    System.out.print("\nType (1) to ask first friend, (2) for second, (3) for third\n");
+                                    Integer friendIndex = scanner2.nextInt();
+                                    System.out.print("\nTo do frontend type (frontend), backend (backend) and similarly for database, mobile, wordpress, prestashop\n");
+                                    String what = scanner1.nextLine();
+                                    player.askFriend(friendIndex - 1, what);
+                                    break Menu;
+                                case "0":
+                                    break Menu;
+                                default:
+                                    System.out.println("\nWrong key, Idk what to do");
+                            }
+                        case "2":
+                            switch (employeeMenu()) {
+                                case "1":
+                                    showUnemployed();
+                                    System.out.println("\nYou will be returned to menu after any key");
+                                    System.in.read();
+                                    break Menu;
+                                case "2":
+                                    Employee employee;
+                                    int index;
+                                    Scanner scanner = new Scanner(System.in);
+                                    System.out.println("Who, from search for employees, do you want to hire?");
+                                    System.out.println("Type (1) for first person, (2) for second etc.");
+                                    index = scanner.nextInt();
+                                    player.hireEmployee(lookingForJob.get(index - 1));
+                                    break Menu;
+                                case "3":
+                                    Employee employeeToDismiss;
+                                    int indexDis;
+                                    Scanner scan = new Scanner(System.in);
+                                    System.out.print("Who, from your employee list, do you want to dismiss?");
+                                    System.out.println("Type (1) for first person, (2) for second etc.");
+                                    indexDis = scan.nextInt();
+                                    player.dismissEmployee(player.employeeList.get(indexDis - 1));
+                                    break Menu;
+                                case "4":
+                                    player.planWork();
+                                    break Menu;
+                                case "5":
+                                    player.showEmployees();
+                                    System.out.println("\nYou will be returned to menu after any key");
+                                    System.in.read();
+                                    break Menu;
+                                case "0":
+                                    break Menu;
+                                default:
+                                    System.out.println("Wrong key idk what to do");
+                            }
+                        case "3":
+                            player.fightWithZus();
+                            break Menu;
+                        case "4":
+                            checkForWin(player);
+                            calendarHelper.add(Calendar.DAY_OF_MONTH, 1);
+                            if (calendarHelper.get(calendarHelper.MONTH) != calendar.get(calendar.MONTH)) {
+                                System.out.print("Next month incoming, tax office remembered you and took 10% of your income");
+                                System.out.print("You also remembered about your employees");
+                                player.setCash(player.getCash() - player.getIncome() * 1 / 10);
+                                player.setIncome(0.0);
+                                for (Employee employee : player.employeeList) {
+                                    player.setCash(player.getCash() - employee.getSalary());
+                                    employee.setCash(employee.getCash() + employee.getSalary());
+                                    player.setCash(player.getCash()-employee.employeeRetention);
+                                }
+                                System.out.print("After all taxes and salaries your budget is: " + player.getCash());
+                            }
+                            player.setLeftMoves(1);
+                            System.out.print("Skipping to next day");
+                            System.out.println("\nYou will be returned to menu after any key");
+                            System.in.read();
+                            try {
+                                if (player.getActiveProject().getDeadLine() == calendarHelper) {
+                                    System.out.print("You did't finish project before deadline, you lost it and lost half of it's salary as penalty");
+                                    player.getActiveProject().setSalary(player.getActiveProject().getSalary() / 2);
+                                }
+                            } catch (NullPointerException e) {
+                            }
+                            //make it work
+                            if (calendarHelper.get(calendarHelper.DAY_OF_MONTH) % 5 == 0) {
+                                for (Employee seller : player.employeeSellerList) {
+                                    seller.sellerResearch();
+                                }
+                            }
+                            calendar = calendarHelper;
+                            System.out.print("\n" + calendar.getTime() + "\n");
+                            break Menu;
+                        case "5":
+                            System.out.print(calendar.getTime() + "\n");
+                            break Menu;
+                        case "6":
+                            System.out.print(player.getCash() + "\n");
+                            break Menu;
+                        case "7":
+                            player.showInfo();
+                            break Menu;
+                        case "quit":
+                            break Quit;
+                        default:
+                            System.out.println("\nWrong key, idk what to do");
+                    }
+                }
+
+
+            case "pvp": {
+                System.out.print("Type first players name, surname and age");
+                name = modeSelection.nextLine();
+                surname = modeSelection.nextLine();
+                age = modeSelection.nextInt();
+                Player player1 = new Player(name, surname, age);
+                System.out.println("Type second players informations");
+                name2 = modeSelection.nextLine();
+                surname2 = modeSelection.nextLine();
+                age2 = modeSelection.nextInt();
+                Player player2 = new Player(name2, surname2, age2);
+
+                for (; ; ) {
+                    Exit:
+                    for (; ; ) {
+                        Menu:
+                        switch (choiceMenu()) {
+
                             case "1":
-                                try {
-                                    System.out.println(player.getActiveProject().getProjectName());
-                                    player.getActiveProject().projectTasks();
-                                }catch (NullPointerException e) {System.out.println("You don't have any active project now");}
-                                System.out.println("\nYou will be returned to menu after any key");
-                                System.in.read();
-                                break Menu;
+                                switch (projectMenu()) {
+                                    case "1":
+                                        try {
+                                            System.out.println(player1.getActiveProject().getProjectName());
+                                            player1.getActiveProject().projectTasks();
+                                        } catch (NullPointerException e) {
+                                            System.out.println("You don't have any active project now");
+                                        }
+                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.in.read();
+                                        break Menu;
+                                    case "2":
+                                        player1.doProgramming(programmingMenu());
+                                        break Menu;
+                                    case "3":
+                                        player1.doResearch();
+                                        break Menu;
+                                    case "4":
+                                        player1.doTests();
+                                        break Menu;
+                                    case "5":
+                                        showAvailableProjects();
+                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.in.read();
+                                        break Menu;
+                                    case "6":
+                                        Calendar varDeadLine = Calendar.getInstance();
+                                        varDeadLine.setTime(calendar.getTime());
+                                        int index;
+                                        Scanner scanner = new Scanner(System.in);
+                                        System.out.println("Which project from search you want to take?");
+                                        System.out.println("Type (1) for first, (2) for second etc.");
+                                        index = scanner.nextInt();
+                                        player1.signContract(availableProjectList.get(index - 1));
+                                        varDeadLine.add(varDeadLine.DAY_OF_MONTH, player1.getActiveProject().getDeadlineTime());
+                                        player1.getActiveProject().getDeadLine().setTime(varDeadLine.getTime());
+                                        break Menu;
+                                    case "7":
+                                        player1.returnProject();
+                                        System.out.println("Project returned");
+                                        break Menu;
+                                    case "8":
+                                        Scanner scanner1 = new Scanner(System.in);
+                                        Scanner scanner2 = new Scanner(System.in);
+                                        showFriends();
+                                        System.out.print("\nType (1) to ask first friend, (2) for second, (3) for third\n");
+                                        Integer friendIndex = scanner2.nextInt();
+                                        System.out.print("\nTo do frontend type (frontend), backend (backend) and similarly for database, mobile, wordpress, prestashop\n");
+                                        String what = scanner1.nextLine();
+                                        player1.askFriend(friendIndex - 1, what);
+                                        break Menu;
+                                    case "0":
+                                        break Menu;
+                                    default:
+                                        System.out.println("\nWrong key, Idk what to do");
+                                }
                             case "2":
-                                player.doProgramming(programmingMenu());
-                                break Menu;
+                                switch (employeeMenu()) {
+                                    case "1":
+                                        showUnemployed();
+                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.in.read();
+                                        break Menu;
+                                    case "2":
+                                        Employee employee;
+                                        int index;
+                                        Scanner scanner = new Scanner(System.in);
+                                        System.out.println("Who, from search for employees, do you want to hire?");
+                                        System.out.println("Type (1) for first person, (2) for second etc.");
+                                        index = scanner.nextInt();
+                                        player1.hireEmployee(lookingForJob.get(index - 1));
+                                        break Menu;
+                                    case "3":
+                                        Employee employeeToDismiss;
+                                        int indexDis;
+                                        Scanner scan = new Scanner(System.in);
+                                        System.out.print("Who, from your employee list, do you want to dismiss?");
+                                        System.out.println("Type (1) for first person, (2) for second etc.");
+                                        indexDis = scan.nextInt();
+                                        player1.dismissEmployee(player1.employeeList.get(indexDis - 1));
+                                        break Menu;
+                                    case "4":
+                                        player1.planWork();
+                                        break Menu;
+                                    case "5":
+                                        player1.showEmployees();
+                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.in.read();
+                                        break Menu;
+                                    case "0":
+                                        break Menu;
+                                    default:
+                                        System.out.println("Wrong key idk what to do");
+                                }
                             case "3":
-                                player.doResearch();
+                                player1.fightWithZus();
                                 break Menu;
                             case "4":
-                                player.doTests();
-                                break Menu;
-                            case "5":
-                                showAvailableProjects();
-                                System.out.println("\nYou will be returned to menu after any key");
+                                checkForWin(player1);
+                                calendarHelper.add(Calendar.DAY_OF_MONTH, 1);
+                                if (calendarHelper.get(calendarHelper.MONTH) != calendar.get(calendar.MONTH)) {
+                                    System.out.print("Next month incoming, tax office remembered you and took 10% of your income");
+                                    System.out.print("You also remembered about your employees");
+                                    player1.setCash(player1.getCash() - player1.getIncome() * 1 / 10);
+                                    player1.setIncome(0.0);
+                                    for (Employee employee : player1.employeeList) {
+                                        player1.setCash(player1.getCash() - employee.getSalary());
+                                        employee.setCash(employee.getCash() + employee.getSalary());
+                                        player1.setCash(player1.getCash()-employee.employeeRetention);
+                                    }
+                                    System.out.print("After all taxes and salaries your budget is: " + player1.getCash());
+                                }
+                                player1.setLeftMoves(1);
+
                                 System.in.read();
+                                try {
+                                    if (player1.getActiveProject().getDeadLine() == calendarHelper) {
+                                        System.out.print("You did't finish project before deadline, you lost it and lost half of it's salary as penalty");
+                                        player1.getActiveProject().setSalary(player1.getActiveProject().getSalary() / 2);
+                                    }
+                                } catch (NullPointerException e) {
+                                }
+                                //make it work
+                                if (calendarHelper.get(calendarHelper.DAY_OF_MONTH) % 5 == 0) {
+                                    for (Employee seller : player1.employeeSellerList) {
+                                        seller.sellerResearch();
+                                    }
+                                }
+                                System.out.print("Skipping to next day");
+                                System.out.println("\nPlayer will be changed after any key");
+                                calendar = calendarHelper;
+                                System.out.print("\n" + calendar.getTime() + "\n");
+                                break Exit;
+                            case "5":
+                                System.out.print(calendar.getTime() + "\n");
                                 break Menu;
                             case "6":
-                                Calendar varDeadLine = Calendar.getInstance();
-                                varDeadLine.setTime(calendar.getTime());
-                                int index;
-                                Scanner scanner = new Scanner(System.in);
-                                System.out.println("Which project from search you want to take?");
-                                System.out.println("Type (1) for first, (2) for second etc.");
-                                index = scanner.nextInt();
-                                player.signContract(availableProjectList.get(index-1));
-                                varDeadLine.add(varDeadLine.DAY_OF_MONTH,player.getActiveProject().getDeadlineTime());
-                                player.getActiveProject().getDeadLine().setTime(varDeadLine.getTime());
+                                System.out.print(player1.getCash() + "\n");
                                 break Menu;
                             case "7":
-                                player.returnProject();
-                                System.out.println("Project returned");
+                                player1.showInfo();
                                 break Menu;
-                            case "8":
-                                Scanner scanner1 = new Scanner(System.in);
-                                Scanner scanner2 = new Scanner(System.in);
-                                showFriends();
-                                System.out.print("\nType (1) to ask first friend, (2) for second, (3) for third\n");
-                                Integer friendIndex = scanner2.nextInt();
-                                System.out.print("\nTo do frontend type (frontend), backend (backend) and similarly for database, mobile, wordpress, prestashop\n");
-                                String what = scanner1.nextLine();
-                                player.askFriend(friendIndex-1,what);
-                                break Menu;
-                            case "0":
-                                break Menu;
+                            case "quit":
+                                break Quit;
                             default:
-                                System.out.println("\nWrong key, Idk what to do");
+                                System.out.println("\nWrong key, idk what to do");
                         }
-                    case "2":
-                        switch (employeeMenu())
-                        {
+                    }
+
+                    Exit2:
+                    for (; ; ) {
+                        Menu:
+                        switch (choiceMenu()) {
                             case "1":
-                                showUnemployed();
-                                System.out.println("\nYou will be returned to menu after any key");
-                                System.in.read();
-                                break Menu;
+                                switch (projectMenu()) {
+                                    case "1":
+                                        try {
+                                            System.out.println(player2.getActiveProject().getProjectName());
+                                            player2.getActiveProject().projectTasks();
+                                        } catch (NullPointerException e) {
+                                            System.out.println("You don't have any active project now");
+                                        }
+                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.in.read();
+                                        break Menu;
+                                    case "2":
+                                        player2.doProgramming(programmingMenu());
+                                        break Menu;
+                                    case "3":
+                                        player2.doResearch();
+                                        break Menu;
+                                    case "4":
+                                        player2.doTests();
+                                        break Menu;
+                                    case "5":
+                                        showAvailableProjects();
+                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.in.read();
+                                        break Menu;
+                                    case "6":
+                                        Calendar varDeadLine = Calendar.getInstance();
+                                        varDeadLine.setTime(calendar2.getTime());
+                                        int index;
+                                        Scanner scanner = new Scanner(System.in);
+                                        System.out.println("Which project from search you want to take?");
+                                        System.out.println("Type (1) for first, (2) for second etc.");
+                                        index = scanner.nextInt();
+                                        player2.signContract(availableProjectList.get(index - 1));
+                                        varDeadLine.add(varDeadLine.DAY_OF_MONTH, player2.getActiveProject().getDeadlineTime());
+                                        player2.getActiveProject().getDeadLine().setTime(varDeadLine.getTime());
+                                        break Menu;
+                                    case "7":
+                                        player2.returnProject();
+                                        System.out.println("Project returned");
+                                        break Menu;
+                                    case "8":
+                                        Scanner scanner1 = new Scanner(System.in);
+                                        Scanner scanner2 = new Scanner(System.in);
+                                        showFriends();
+                                        System.out.print("\nType (1) to ask first friend, (2) for second, (3) for third\n");
+                                        Integer friendIndex = scanner2.nextInt();
+                                        System.out.print("\nTo do frontend type (frontend), backend (backend) and similarly for database, mobile, wordpress, prestashop\n");
+                                        String what = scanner1.nextLine();
+                                        player2.askFriend(friendIndex - 1, what);
+                                        break Menu;
+                                    case "0":
+                                        break Menu;
+                                    default:
+                                        System.out.println("\nWrong key, Idk what to do");
+                                }
                             case "2":
-                                Employee employee;
-                                int index;
-                                Scanner scanner = new Scanner(System.in);
-                                System.out.println("Who, from search for employees, do you want to hire?");
-                                System.out.println("Type (1) for first person, (2) for second etc.");
-                                index = scanner.nextInt();
-                                player.hireEmployee(lookingForJob.get(index-1));
-                                break Menu;
+                                switch (employeeMenu()) {
+                                    case "1":
+                                        showUnemployed();
+                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.in.read();
+                                        break Menu;
+                                    case "2":
+                                        Employee employee;
+                                        int index;
+                                        Scanner scanner = new Scanner(System.in);
+                                        System.out.println("Who, from search for employees, do you want to hire?");
+                                        System.out.println("Type (1) for first person, (2) for second etc.");
+                                        index = scanner.nextInt();
+                                        player2.hireEmployee(lookingForJob.get(index - 1));
+                                        break Menu;
+                                    case "3":
+                                        Employee employeeToDismiss;
+                                        int indexDis;
+                                        Scanner scan = new Scanner(System.in);
+                                        System.out.print("Who, from your employee list, do you want to dismiss?");
+                                        System.out.println("Type (1) for first person, (2) for second etc.");
+                                        indexDis = scan.nextInt();
+                                        player2.dismissEmployee(player2.employeeList.get(indexDis - 1));
+                                        break Menu;
+                                    case "4":
+                                        player2.planWork();
+                                        break Menu;
+                                    case "5":
+                                        player2.showEmployees();
+                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.in.read();
+                                        break Menu;
+                                    case "0":
+                                        break Menu;
+                                    default:
+                                        System.out.println("Wrong key idk what to do");
+                                }
                             case "3":
-                                Employee employeeToDismiss;
-                                int indexDis;
-                                Scanner scan = new Scanner(System.in);
-                                System.out.print("Who, from your employee list, do you want to dismiss?");
-                                System.out.println("Type (1) for first person, (2) for second etc.");
-                                indexDis = scan.nextInt();
-                                player.dismissEmployee(player.employeeList.get(indexDis-1));
+                                player2.fightWithZus();
                                 break Menu;
                             case "4":
-                                player.planWork();
-                                break Menu;
-                            case "5":
-                                player.showEmployees();
-                                System.out.println("\nYou will be returned to menu after any key");
+                                checkForWin(player2);
+                                calendarHelper2.add(Calendar.DAY_OF_MONTH, 1);
+                                if (calendarHelper2.get(calendarHelper2.MONTH) != calendar2.get(calendar2.MONTH)) {
+                                    System.out.print("Next month incoming, tax office remembered you and took 10% of your income");
+                                    System.out.print("You also remembered about your employees");
+                                    player2.setCash(player2.getCash() - player2.getIncome() * 1 / 10);
+                                    player2.setIncome(0.0);
+                                    for (Employee employee : player2.employeeList) {
+                                        player2.setCash(player2.getCash() - employee.getSalary());
+                                        employee.setCash(employee.getCash() + employee.getSalary());
+                                        player2.setCash(player2.getCash()-employee.employeeRetention);
+                                    }
+                                    System.out.print("After all taxes and salaries your budget is: " + player2.getCash());
+                                }
+                                player2.setLeftMoves(1);
+
                                 System.in.read();
+                                try {
+                                    if (player2.getActiveProject().getDeadLine() == calendarHelper2) {
+                                        System.out.print("You did't finish project before deadline, you lost it and lost half of it's salary as penalty");
+                                        player2.getActiveProject().setSalary(player2.getActiveProject().getSalary() / 2);
+                                    }
+                                } catch (NullPointerException e) {
+                                }
+                                //make it work
+                                if (calendarHelper2.get(calendarHelper2.DAY_OF_MONTH) % 5 == 0) {
+                                    for (Employee seller : player2.employeeSellerList) {
+                                        seller.sellerResearch();
+                                    }
+                                }
+                                System.out.print("Skipping to next day");
+                                System.out.println("\nPlayer will be changed after any key");
+                                calendar2 = calendarHelper2;
+                                System.out.print("\n" + calendar2.getTime() + "\n");
+                                break Exit2;
+                            case "5":
+                                System.out.print(calendar2.getTime() + "\n");
                                 break Menu;
-                            case "0":
+                            case "6":
+                                System.out.print(player2.getCash() + "\n");
                                 break Menu;
+                            case "7":
+                                player2.showInfo();
+                                break Menu;
+                            case "quit":
+                                break Quit;
                             default:
-                                System.out.println("Wrong key idk what to do");
+                                System.out.println("\nWrong key, idk what to do");
                         }
-                    case "3":
-                        player.fightWithZus();
-                        break Menu;
-                    case "4":
-                        calendarHelper.add(Calendar.DAY_OF_MONTH,1);
-                        if (calendarHelper.get(calendarHelper.MONTH) > calendar.get(calendar.MONTH))
-                        {
-                            System.out.print("Next month incoming, tax office remembered you and took 10% of your income");
-                            System.out.print("You also remembered about your employees");
-                            player.setCash(player.getCash()-player.getIncome()*1/10);
-                            player.setIncome(0.0);
-                            for (Employee employee : player.employeeList)
-                            {
-                                player.setCash(player.getCash()-employee.getSalary());
-                                employee.setCash(employee.getCash()+employee.getSalary());
-                            }
-                            System.out.print("After all taxes and salaries your budget is: "+player.getCash());
-                        }
-                        player.setLeftMoves(1);
-                        System.out.print("Skipping to next day");
-                        System.out.println("\nYou will be returned to menu after any key");
-                        System.in.read();
-                        try {
-                            if (player.getActiveProject().getDeadLine() == calendarHelper) {
-                                System.out.print("You did't finish project before deadline, you lost it and lost half of it's salary as penalty");
-                                player.getActiveProject().setSalary(player.getActiveProject().getSalary()/2);
-                            }
-                        }catch (NullPointerException e) {}
-                        //make it work
-                        if (calendarHelper.get(calendarHelper.DAY_OF_MONTH)%5 == 0) {
-                            for (Employee seller : player.employeeSellerList) {
-                                seller.sellerResearch();
-                            }
-                        }
-                        calendar = calendarHelper;
-                        System.out.print("\n"+calendar.getTime()+"\n");
-                        break Menu;
-                    case "5":
-                        System.out.print(calendar.getTime()+"\n");
-                        break Menu;
-                    case "6":
-                        System.out.print(player.getCash()+"\n");
-                        break Menu;
-                    case "quit":
-                        break Exit;
-                    default:
-                        System.out.println("\nWrong key, idk what to do");
+                    }
                 }
             }
-            //endregion
-        }
+        }//endregion
+    }
 
-
+public static void checkForWin(Player player)
+{
+    if (player.getBigProjectsDone() == 3 && player.getStartMoney() < player.getCash() || projectList.size() == 0 && availableProjectList.size() ==0 &&player.getStartMoney() < player.getCash())
+    System.out.println("Congratulations you have won the game");
+    Runtime.getRuntime().exit(0);
+}
 
     //region [Lists helpers]
     private static void showAvailableProjects() {

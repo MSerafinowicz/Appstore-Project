@@ -19,6 +19,7 @@ public class Player extends Person implements GenerateRandomInteger {
     private Integer leftMoves = 1;
     private Double income = 0.0;
     private Double startMoney =1500.0;
+    private Integer bigProjectsDone = 0;
 
     List<Employee> employeeProgrammerList = new ArrayList<Employee>(0);
     List<Employee> employeeTesterList = new ArrayList<Employee>(0);
@@ -444,11 +445,21 @@ public class Player extends Person implements GenerateRandomInteger {
                     this.cash = this.cash + activeProject.getSalary();
                     activeProject.setIsDone(true);
                     this.income = this.income + activeProject.getSalary();
+                    if (this.activeProject.getHard() == true)
+                    {
+                        this.bigProjectsDone++;
+                    }
                     this.activeProject = null;
                     this.actualClient = null;
                     this.leftMoves--;
+                    System.out.print("Project returned successfully, check your ");
                 } else {
                     if (actualClient.getContractLoss() > 10) {
+                        if (this.activeProject.getHard() == true)
+                        {
+                            this.bigProjectsDone++;
+                        }
+                        activeProject.setIsDone(true);
                         this.activeProject = null;
                         this.actualClient = null;
                         this.leftMoves--;
@@ -456,6 +467,10 @@ public class Player extends Person implements GenerateRandomInteger {
                         this.cash = this.cash + (activeProject.getSalary() / 2);
                         this.income = this.income + activeProject.getSalary()/2;
                         activeProject.setIsDone(true);
+                        if (this.activeProject.getHard() == true)
+                        {
+                            this.bigProjectsDone++;
+                        }
                         this.activeProject = null;
                         this.actualClient = null;
                         this.leftMoves--;
@@ -507,5 +522,14 @@ public class Player extends Person implements GenerateRandomInteger {
 
     public Double getStartMoney() {
         return startMoney;
+    }
+
+    public void showInfo()
+    {
+        System.out.println(this.name+" "+this.surname+" "+this.age);
+    }
+
+    public Integer getBigProjectsDone() {
+        return bigProjectsDone;
     }
 }

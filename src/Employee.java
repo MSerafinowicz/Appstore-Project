@@ -5,6 +5,7 @@ public abstract class Employee extends Person
     protected boolean isProgramer;
     protected boolean isTester;
     protected boolean isSeller;
+    protected Double employeeRetention = 500.0;
 
     protected abstract Double getSalary();
 
