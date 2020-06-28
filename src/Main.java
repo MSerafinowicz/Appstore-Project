@@ -191,7 +191,7 @@ public class Main
         calendar.set(2020, 01, 01);
         calendar2.set(2020, 01, 01);
         Calendar calendarHelper = calendar;
-        Calendar calendarHelper2 = calendar;
+        Calendar calendarHelper2 = calendar2;
         String choice = null;
         String name;
         String name2;
@@ -202,14 +202,9 @@ public class Main
         Scanner modeSelection = new Scanner(System.in);
         String mode;
 
-        System.out.println("Do you want to play solo or pvp? Type (solo) or (pvp)");
+        System.out.println("Do you want to play solo or pvp? Type (solo) or (pvp), (whatever) to close game");
         mode = modeSelection.nextLine();
 
-        System.out.println("Welcome to appstore game\n");
-        System.out.println("\nYour friends are\n");
-        showFriends();
-        System.out.println("\nThere are 15 projects in game, you will see only 3 now. Rest you have to find by doing research or hiring seller");
-        System.out.println("Your goal is to finish 3 'hard' projects or end with bigger cash balance than on start\n Have fun!");
         //endregion
 
 
@@ -222,6 +217,7 @@ public class Main
                 surname = modeSelection.nextLine();
                 age = modeSelection.nextInt();
                 Player player = new Player(name, surname, age);
+                welcomeMassage();
 
                 Exit:
                 for (; ; ) {
@@ -293,7 +289,6 @@ public class Main
                                     System.in.read();
                                     break Menu;
                                 case "2":
-                                    Employee employee;
                                     int index;
                                     Scanner scanner = new Scanner(System.in);
                                     System.out.println("Who, from search for employees, do you want to hire?");
@@ -302,7 +297,6 @@ public class Main
                                     player.hireEmployee(lookingForJob.get(index - 1));
                                     break Menu;
                                 case "3":
-                                    Employee employeeToDismiss;
                                     int indexDis;
                                     Scanner scan = new Scanner(System.in);
                                     System.out.print("Who, from your employee list, do you want to dismiss?");
@@ -328,38 +322,7 @@ public class Main
                             break Menu;
                         case "4":
                             checkForWin(player);
-                            calendarHelper.add(Calendar.DAY_OF_MONTH, 1);
-                            if (calendarHelper.get(calendarHelper.MONTH) != calendar.get(calendar.MONTH)) {
-                                System.out.print("Next month incoming, tax office remembered you and took 10% of your income");
-                                System.out.print("You also remembered about your employees");
-                                player.setCash(player.getCash() - player.getIncome() * 1 / 10);
-                                player.setIncome(0.0);
-                                for (Employee employee : player.employeeList) {
-                                    player.setCash(player.getCash() - employee.getSalary());
-                                    employee.setCash(employee.getCash() + employee.getSalary());
-                                    player.setCash(player.getCash()-employee.employeeRetention);
-                                }
-                                System.out.print("After all taxes and salaries your budget is: " + player.getCash());
-                            }
-                            player.setLeftMoves(1);
-                            System.out.print("Skipping to next day");
-                            System.out.println("\nYou will be returned to menu after any key");
-                            System.in.read();
-                            try {
-                                if (player.getActiveProject().getDeadLine() == calendarHelper) {
-                                    System.out.print("You did't finish project before deadline, you lost it and lost half of it's salary as penalty");
-                                    player.getActiveProject().setSalary(player.getActiveProject().getSalary() / 2);
-                                }
-                            } catch (NullPointerException e) {
-                            }
-                            //make it work
-                            if (calendarHelper.get(calendarHelper.DAY_OF_MONTH) % 5 == 0) {
-                                for (Employee seller : player.employeeSellerList) {
-                                    seller.sellerResearch();
-                                }
-                            }
-                            calendar = calendarHelper;
-                            System.out.print("\n" + calendar.getTime() + "\n");
+                            endTurn(calendarHelper,calendar,player);
                             break Menu;
                         case "5":
                             System.out.print(calendar.getTime() + "\n");
@@ -379,16 +342,22 @@ public class Main
 
 
             case "pvp": {
-                System.out.print("Type first players name, surname and age");
+                System.out.print("Type first players name, surname and age\n");
                 name = modeSelection.nextLine();
                 surname = modeSelection.nextLine();
                 age = modeSelection.nextInt();
                 Player player1 = new Player(name, surname, age);
-                System.out.println("Type second players informations");
-                name2 = modeSelection.nextLine();
-                surname2 = modeSelection.nextLine();
-                age2 = modeSelection.nextInt();
+                System.out.println("Type second players informations\n");
+                Scanner scannerplayer2 = new Scanner(System.in);
+                name2 = scannerplayer2.nextLine();
+                surname2 = scannerplayer2.nextLine();
+                age2 = scannerplayer2.nextInt();
                 Player player2 = new Player(name2, surname2, age2);
+                System.out.println("Welcome to appstore game\n");
+                System.out.println("\nYour friends are\n");
+                showFriends();
+                System.out.println("\nThere are 15 projects in game, you will see only 3 now. Rest you have to find by doing research or hiring seller");
+                System.out.println("Your goal is to finish 3 'hard' projects or end with bigger cash balance than on start\n Have fun!");
 
                 for (; ; ) {
                     Exit:
@@ -461,7 +430,6 @@ public class Main
                                         System.in.read();
                                         break Menu;
                                     case "2":
-                                        Employee employee;
                                         int index;
                                         Scanner scanner = new Scanner(System.in);
                                         System.out.println("Who, from search for employees, do you want to hire?");
@@ -470,7 +438,6 @@ public class Main
                                         player1.hireEmployee(lookingForJob.get(index - 1));
                                         break Menu;
                                     case "3":
-                                        Employee employeeToDismiss;
                                         int indexDis;
                                         Scanner scan = new Scanner(System.in);
                                         System.out.print("Who, from your employee list, do you want to dismiss?");
@@ -496,39 +463,7 @@ public class Main
                                 break Menu;
                             case "4":
                                 checkForWin(player1);
-                                calendarHelper.add(Calendar.DAY_OF_MONTH, 1);
-                                if (calendarHelper.get(calendarHelper.MONTH) != calendar.get(calendar.MONTH)) {
-                                    System.out.print("Next month incoming, tax office remembered you and took 10% of your income");
-                                    System.out.print("You also remembered about your employees");
-                                    player1.setCash(player1.getCash() - player1.getIncome() * 1 / 10);
-                                    player1.setIncome(0.0);
-                                    for (Employee employee : player1.employeeList) {
-                                        player1.setCash(player1.getCash() - employee.getSalary());
-                                        employee.setCash(employee.getCash() + employee.getSalary());
-                                        player1.setCash(player1.getCash()-employee.employeeRetention);
-                                    }
-                                    System.out.print("After all taxes and salaries your budget is: " + player1.getCash());
-                                }
-                                player1.setLeftMoves(1);
-
-                                System.in.read();
-                                try {
-                                    if (player1.getActiveProject().getDeadLine() == calendarHelper) {
-                                        System.out.print("You did't finish project before deadline, you lost it and lost half of it's salary as penalty");
-                                        player1.getActiveProject().setSalary(player1.getActiveProject().getSalary() / 2);
-                                    }
-                                } catch (NullPointerException e) {
-                                }
-                                //make it work
-                                if (calendarHelper.get(calendarHelper.DAY_OF_MONTH) % 5 == 0) {
-                                    for (Employee seller : player1.employeeSellerList) {
-                                        seller.sellerResearch();
-                                    }
-                                }
-                                System.out.print("Skipping to next day");
-                                System.out.println("\nPlayer will be changed after any key");
-                                calendar = calendarHelper;
-                                System.out.print("\n" + calendar.getTime() + "\n");
+                                endTurn(calendarHelper,calendar,player1);
                                 break Exit;
                             case "5":
                                 System.out.print(calendar.getTime() + "\n");
@@ -624,7 +559,6 @@ public class Main
                                         player2.hireEmployee(lookingForJob.get(index - 1));
                                         break Menu;
                                     case "3":
-                                        Employee employeeToDismiss;
                                         int indexDis;
                                         Scanner scan = new Scanner(System.in);
                                         System.out.print("Who, from your employee list, do you want to dismiss?");
@@ -650,39 +584,7 @@ public class Main
                                 break Menu;
                             case "4":
                                 checkForWin(player2);
-                                calendarHelper2.add(Calendar.DAY_OF_MONTH, 1);
-                                if (calendarHelper2.get(calendarHelper2.MONTH) != calendar2.get(calendar2.MONTH)) {
-                                    System.out.print("Next month incoming, tax office remembered you and took 10% of your income");
-                                    System.out.print("You also remembered about your employees");
-                                    player2.setCash(player2.getCash() - player2.getIncome() * 1 / 10);
-                                    player2.setIncome(0.0);
-                                    for (Employee employee : player2.employeeList) {
-                                        player2.setCash(player2.getCash() - employee.getSalary());
-                                        employee.setCash(employee.getCash() + employee.getSalary());
-                                        player2.setCash(player2.getCash()-employee.employeeRetention);
-                                    }
-                                    System.out.print("After all taxes and salaries your budget is: " + player2.getCash());
-                                }
-                                player2.setLeftMoves(1);
-
-                                System.in.read();
-                                try {
-                                    if (player2.getActiveProject().getDeadLine() == calendarHelper2) {
-                                        System.out.print("You did't finish project before deadline, you lost it and lost half of it's salary as penalty");
-                                        player2.getActiveProject().setSalary(player2.getActiveProject().getSalary() / 2);
-                                    }
-                                } catch (NullPointerException e) {
-                                }
-                                //make it work
-                                if (calendarHelper2.get(calendarHelper2.DAY_OF_MONTH) % 5 == 0) {
-                                    for (Employee seller : player2.employeeSellerList) {
-                                        seller.sellerResearch();
-                                    }
-                                }
-                                System.out.print("Skipping to next day");
-                                System.out.println("\nPlayer will be changed after any key");
-                                calendar2 = calendarHelper2;
-                                System.out.print("\n" + calendar2.getTime() + "\n");
+                                endTurn(calendarHelper2,calendar2,player2);
                                 break Exit2;
                             case "5":
                                 System.out.print(calendar2.getTime() + "\n");
@@ -701,17 +603,12 @@ public class Main
                     }
                 }
             }
-        }//endregion
+        }
+        //endregion
     }
 
-public static void checkForWin(Player player)
-{
-    if (player.getBigProjectsDone() == 3 && player.getStartMoney() < player.getCash() || projectList.size() == 0 && availableProjectList.size() ==0 &&player.getStartMoney() < player.getCash())
-    System.out.println("Congratulations you have won the game");
-    Runtime.getRuntime().exit(0);
-}
 
-    //region [Lists helpers]
+    //region [Helpers]
     private static void showAvailableProjects() {
         for (Project project : availableProjectList)
         {
@@ -744,6 +641,57 @@ public static void checkForWin(Player player)
             System.out.print("\n");
             friend.showInfo();
         }
+    }
+
+    private static void checkForWin(Player player)
+    {
+        if ((player.getBigProjectsDone() == 3 && player.getStartMoney() < player.getCash()) || (projectList.size() == 0 && availableProjectList.size() ==0 &&player.getStartMoney() < player.getCash())) {
+            System.out.println("Congratulations" + player.getName() + player.getSurname() + " you have won the game");
+            Runtime.getRuntime().exit(0);
+        }
+    }
+
+    private static void endTurn(Calendar calendarHelper, Calendar calendar, Player player)
+    {
+        calendarHelper.add(Calendar.DAY_OF_MONTH, 1);
+        if (calendarHelper.MONTH != calendar.MONTH) {
+            System.out.print("Next month incoming, tax office remembered you and took 10% of your income");
+            System.out.print("You also remembered about your employees");
+            player.setCash(player.getCash() - player.getIncome() * 1 / 10);
+            player.setIncome(0.0);
+            for (Employee employee : player.employeeList) {
+                player.setCash(player.getCash() - employee.getSalary());
+                employee.setCash(employee.getCash() + employee.getSalary());
+                player.setCash(player.getCash()-employee.employeeRetention);
+            }
+            System.out.print("After all taxes and salaries your budget is: " + player.getCash());
+        }
+        player.setLeftMoves(1);
+
+        try {
+            if (player.getActiveProject().getDeadLine() == calendarHelper) {
+                System.out.print("You did't finish project before deadline, you lost it and lost half of it's salary as penalty");
+                player.getActiveProject().setSalary(player.getActiveProject().getSalary() / 2);
+            }
+        } catch (NullPointerException e) {
+        }
+        if (calendarHelper.get(Calendar.DAY_OF_MONTH) % 5 == 0) {
+            for (Employee seller : player.employeeSellerList) {
+                seller.sellerResearch();
+            }
+        }
+        System.out.print("Skipping to next day");
+        System.out.println("\nPlayer will be changed after any key");
+        calendar.setTime(calendarHelper.getTime());
+    }
+
+    private static void welcomeMassage()
+    {
+        System.out.println("\nWelcome to appstore game\n");
+        System.out.println("\nYour friends are\n");
+        showFriends();
+        System.out.println("\nThere are 15 projects in game, you will see only 3 now. Rest you have to find by doing research or hiring seller");
+        System.out.println("Your goal is to finish 3 'hard' projects or end with bigger cash balance than on start\n Have fun!");
     }
 
     //endregion
