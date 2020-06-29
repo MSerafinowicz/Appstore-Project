@@ -1,10 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Random;
 
-public class Client extends Person implements GenerateRandomInteger
-{
+public class Client extends Person implements GenerateRandomInteger {
     Project project;
     private Double cash;
 
@@ -15,24 +13,21 @@ public class Client extends Person implements GenerateRandomInteger
 
     public List<Project> projectList = new ArrayList<Project>(1);
 
-    public int getProjectId(Project project)
-    {
+    public int getProjectId(Project project) {
         int index;
         index = projectList.indexOf(project);
         return index;
     }
 
     @Override
-    public Integer intGenerate(Integer bound, Integer minimum)
-    {
+    public Integer intGenerate(Integer bound, Integer minimum) {
         Random r = new Random();
         int result = r.nextInt(bound) + minimum;
         return result;
     }
 
     @Override
-    public Integer intGenerate(Integer bound)
-    {
+    public Integer intGenerate(Integer bound) {
         Random r = new Random();
         int result = r.nextInt(bound);
         return result;
@@ -50,19 +45,16 @@ public class Client extends Person implements GenerateRandomInteger
         return contractLoss;
     }
 
-    public enum clientType
-    {
-        Chill,Strict,skrwl;
+    public enum clientType {
+        Chill, Strict, skrwl;
     }
 
-    public Client (clientType type)
-    {
-        switch (type)
-        {
+    public Client(clientType type) {
+        switch (type) {
             case Chill:
                 this.name = namePoolMale[intGenerate(6)];
                 this.surname = surnamePoolMale[intGenerate(10)];
-                this.age = intGenerate(40)+18;
+                this.age = intGenerate(40) + 18;
                 this.paymentDelay = intGenerate(14);
                 this.noPenalty = intGenerate(13);
                 this.contractLoss = 1;
@@ -71,7 +63,7 @@ public class Client extends Person implements GenerateRandomInteger
             case Strict:
                 this.name = namePoolFemale[intGenerate(6)];
                 this.surname = surnamePoolFemale[intGenerate(10)];
-                this.age = intGenerate(40)+18;
+                this.age = intGenerate(40) + 18;
                 this.paymentDelay = 11;
                 this.noPenalty = 11;
                 this.contractLoss = intGenerate(16);
@@ -80,7 +72,7 @@ public class Client extends Person implements GenerateRandomInteger
             case skrwl:
                 this.name = namePoolMale[intGenerate(6)];
                 this.surname = surnamePoolMale[intGenerate(10)];
-                this.age = intGenerate(40)+18;
+                this.age = intGenerate(40) + 18;
                 this.paymentDelay = intGenerate(14);
                 this.noPenalty = 11;
                 this.contractLoss = 11;
@@ -88,8 +80,7 @@ public class Client extends Person implements GenerateRandomInteger
         }
     }
 
-    public String showInfo()
-    {
-        return this.name+" "+this.surname;
+    public String showInfo() {
+        return this.name + " " + this.surname;
     }
 }

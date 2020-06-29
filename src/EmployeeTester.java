@@ -1,7 +1,6 @@
 import java.util.Random;
 
-public class EmployeeTester extends Employee implements GenerateRandomInteger
-{
+public class EmployeeTester extends Employee implements GenerateRandomInteger {
     private Double salary = 1000.0;
     private final boolean isTester = true;
 
@@ -17,7 +16,7 @@ public class EmployeeTester extends Employee implements GenerateRandomInteger
 
     @Override
     protected void showInfo() {
-        System.out.println("Tester "+this.name+" "+this.surname+" "+this.salary+" Tester");
+        System.out.println("Tester " + this.name + " " + this.surname + " " + this.salary + " Tester");
     }
 
     @Override
@@ -59,8 +58,7 @@ public class EmployeeTester extends Employee implements GenerateRandomInteger
         return isTester;
     }
 
-    public EmployeeTester()
-    {
+    public EmployeeTester() {
         int x = intGenerate(11);
         if (x > 5) {
             int nameNumber = intGenerate(6);
@@ -75,8 +73,7 @@ public class EmployeeTester extends Employee implements GenerateRandomInteger
             this.age = age;
             this.cash = 0.0;
 
-        } else
-        {
+        } else {
             int nameNumber = intGenerate(6);
             String name = namePoolFemale[nameNumber];
             int surnameNumber = intGenerate(10);

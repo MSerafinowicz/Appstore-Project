@@ -1,12 +1,10 @@
 import java.util.Random;
 
-public class EmployeeSeller extends Employee implements GenerateRandomInteger
-{
+public class EmployeeSeller extends Employee implements GenerateRandomInteger {
     private Double salary = 500.0;
     private final boolean isSeller = true;
 
-    public void sellerResearch()
-    {
+    public void sellerResearch() {
         Project project = Main.projectList.get(intGenerate(Main.projectList.size()));
         Main.availableProjectList.add(project);
         Main.projectList.remove(project);
@@ -14,8 +12,7 @@ public class EmployeeSeller extends Employee implements GenerateRandomInteger
         System.out.print("New project found by seller");
     }
 
-    public EmployeeSeller()
-    {
+    public EmployeeSeller() {
         int x = intGenerate(11);
         if (x > 5) {
             int nameNumber = intGenerate(6);
@@ -30,8 +27,7 @@ public class EmployeeSeller extends Employee implements GenerateRandomInteger
             this.age = age;
             this.cash = 0.0;
 
-        } else
-        {
+        } else {
             int nameNumber = intGenerate(6);
             String name = namePoolFemale[nameNumber];
             int surnameNumber = intGenerate(10);
@@ -58,7 +54,7 @@ public class EmployeeSeller extends Employee implements GenerateRandomInteger
 
     @Override
     protected void showInfo() {
-        System.out.println("Seller "+this.name+" "+this.surname);
+        System.out.println("Seller " + this.name + " " + this.surname);
     }
 
     @Override

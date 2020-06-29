@@ -1,18 +1,10 @@
-import jdk.jfr.Frequency;
-
-import java.awt.*;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.nio.channels.CancelledKeyException;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.CancellationException;
 
-public class Main
-{
+public class Main {
     //region [Necessary Lists]
     public static List<Project> projectList = new ArrayList<Project>(16);
     public static List<Project> availableProjectList = new ArrayList<Project>(10);
@@ -23,8 +15,7 @@ public class Main
     //endregion
 
     //region [Menu]
-    static String choiceMenu()
-    {
+    static String choiceMenu() {
         String choice;
         Scanner scanner = new Scanner(System.in);
 
@@ -33,8 +24,7 @@ public class Main
         return choice;
     }
 
-    static String projectMenu()
-    {
+    static String projectMenu() {
         String choice;
         Scanner scanner = new Scanner(System.in);
 
@@ -43,8 +33,7 @@ public class Main
         return choice;
     }
 
-    static String programmingMenu()
-    {
+    static String programmingMenu() {
         String choice;
         Scanner scanner = new Scanner(System.in);
         System.out.println("What do you want to do?");
@@ -53,8 +42,7 @@ public class Main
         return choice;
     }
 
-    static String employeeMenu()
-    {
+    static String employeeMenu() {
         String choice;
         Scanner scanner = new Scanner(System.in);
         System.out.println("\nSearch for employees (1)\nHire Employee (2)\nDismiss Employee (3)\nPlan work for your employees (4)\nSee your employees (5)\nBack to menu (0)");
@@ -62,7 +50,6 @@ public class Main
         return choice;
     }
     //endregion
-
 
     public static void main(String[] args) throws IOException {
         //region [Game Setting]
@@ -202,7 +189,7 @@ public class Main
         Scanner modeSelection = new Scanner(System.in);
         String mode;
 
-        System.out.println("Do you want to play solo or pvp? Type (solo) or (pvp), (whatever) to close game");
+        System.out.println("Do you want to play solo or pvp? Type (solo) or (pvp), anything else to close game");
         mode = modeSelection.nextLine();
 
         //endregion
@@ -233,7 +220,7 @@ public class Main
                                     } catch (NullPointerException e) {
                                         System.out.println("You don't have any active project now");
                                     }
-                                    System.out.println("\nYou will be returned to menu after any key");
+                                    System.out.println("\nYou will be returned to menu after enter");
                                     System.in.read();
                                     break Menu;
                                 case "2":
@@ -247,7 +234,7 @@ public class Main
                                     break Menu;
                                 case "5":
                                     showAvailableProjects();
-                                    System.out.println("\nYou will be returned to menu after any key");
+                                    System.out.println("\nYou will be returned to menu after enter");
                                     System.in.read();
                                     break Menu;
                                 case "6":
@@ -258,13 +245,16 @@ public class Main
                                     System.out.println("Which project from search you want to take?");
                                     System.out.println("Type (1) for first, (2) for second etc.");
                                     index = scanner.nextInt();
-                                    player.signContract(availableProjectList.get(index - 1));
+                                    try {
+                                        player.signContract(availableProjectList.get(index - 1));
+                                    } catch (IndexOutOfBoundsException e) {
+                                        System.out.println("You typed too big number, max is now: " + availableProjectList.size());
+                                    }
                                     varDeadLine.add(varDeadLine.DAY_OF_MONTH, player.getActiveProject().getDeadlineTime());
                                     player.getActiveProject().getDeadLine().setTime(varDeadLine.getTime());
                                     break Menu;
                                 case "7":
                                     player.returnProject();
-                                    System.out.println("Project returned");
                                     break Menu;
                                 case "8":
                                     Scanner scanner1 = new Scanner(System.in);
@@ -285,7 +275,7 @@ public class Main
                             switch (employeeMenu()) {
                                 case "1":
                                     showUnemployed();
-                                    System.out.println("\nYou will be returned to menu after any key");
+                                    System.out.println("\nYou will be returned to menu after enter");
                                     System.in.read();
                                     break Menu;
                                 case "2":
@@ -294,7 +284,11 @@ public class Main
                                     System.out.println("Who, from search for employees, do you want to hire?");
                                     System.out.println("Type (1) for first person, (2) for second etc.");
                                     index = scanner.nextInt();
-                                    player.hireEmployee(lookingForJob.get(index - 1));
+                                    try {
+                                        player.hireEmployee(lookingForJob.get(index - 1));
+                                    } catch (IndexOutOfBoundsException e) {
+                                        System.out.println("You typed too big number, max is now:" + lookingForJob.size());
+                                    }
                                     break Menu;
                                 case "3":
                                     int indexDis;
@@ -302,14 +296,20 @@ public class Main
                                     System.out.print("Who, from your employee list, do you want to dismiss?");
                                     System.out.println("Type (1) for first person, (2) for second etc.");
                                     indexDis = scan.nextInt();
-                                    player.dismissEmployee(player.employeeList.get(indexDis - 1));
+                                    try {
+                                        player.dismissEmployee(player.employeeList.get(indexDis - 1));
+                                    } catch (IndexOutOfBoundsException e) {
+                                        System.out.println("You typed too big number, max now is: " + player.employeeList.size());
+                                    }
                                     break Menu;
                                 case "4":
-                                    player.planWork();
+                                    if (calendar.get(calendar.DAY_OF_WEEK) < 6) {
+                                        player.planWork();
+                                    } else System.out.println("you can't have employees work over the weekend");
                                     break Menu;
                                 case "5":
                                     player.showEmployees();
-                                    System.out.println("\nYou will be returned to menu after any key");
+                                    System.out.println("\nYou will be returned to menu after enter");
                                     System.in.read();
                                     break Menu;
                                 case "0":
@@ -321,8 +321,9 @@ public class Main
                             player.fightWithZus();
                             break Menu;
                         case "4":
-                            checkForWin(player);
-                            endTurn(calendarHelper,calendar,player);
+                            checkForWinLose(player, calendar);
+                            endTurn(calendarHelper, calendar, player);
+                            player.employeesL4Draw();
                             break Menu;
                         case "5":
                             System.out.print(calendar.getTime() + "\n");
@@ -353,11 +354,7 @@ public class Main
                 surname2 = scannerplayer2.nextLine();
                 age2 = scannerplayer2.nextInt();
                 Player player2 = new Player(name2, surname2, age2);
-                System.out.println("Welcome to appstore game\n");
-                System.out.println("\nYour friends are\n");
-                showFriends();
-                System.out.println("\nThere are 15 projects in game, you will see only 3 now. Rest you have to find by doing research or hiring seller");
-                System.out.println("Your goal is to finish 3 'hard' projects or end with bigger cash balance than on start\n Have fun!");
+                welcomeMassage();
 
                 for (; ; ) {
                     Exit:
@@ -374,7 +371,7 @@ public class Main
                                         } catch (NullPointerException e) {
                                             System.out.println("You don't have any active project now");
                                         }
-                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.out.println("\nYou will be returned to menu after enter");
                                         System.in.read();
                                         break Menu;
                                     case "2":
@@ -388,7 +385,7 @@ public class Main
                                         break Menu;
                                     case "5":
                                         showAvailableProjects();
-                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.out.println("\nYou will be returned to menu after enter");
                                         System.in.read();
                                         break Menu;
                                     case "6":
@@ -399,13 +396,16 @@ public class Main
                                         System.out.println("Which project from search you want to take?");
                                         System.out.println("Type (1) for first, (2) for second etc.");
                                         index = scanner.nextInt();
-                                        player1.signContract(availableProjectList.get(index - 1));
+                                        try {
+                                            player1.signContract(availableProjectList.get(index - 1));
+                                        } catch (IndexOutOfBoundsException e) {
+                                            System.out.println("You typed too big number, max is now: " + availableProjectList.size());
+                                        }
                                         varDeadLine.add(varDeadLine.DAY_OF_MONTH, player1.getActiveProject().getDeadlineTime());
                                         player1.getActiveProject().getDeadLine().setTime(varDeadLine.getTime());
                                         break Menu;
                                     case "7":
                                         player1.returnProject();
-                                        System.out.println("Project returned");
                                         break Menu;
                                     case "8":
                                         Scanner scanner1 = new Scanner(System.in);
@@ -426,7 +426,7 @@ public class Main
                                 switch (employeeMenu()) {
                                     case "1":
                                         showUnemployed();
-                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.out.println("\nYou will be returned to menu after enter");
                                         System.in.read();
                                         break Menu;
                                     case "2":
@@ -435,7 +435,11 @@ public class Main
                                         System.out.println("Who, from search for employees, do you want to hire?");
                                         System.out.println("Type (1) for first person, (2) for second etc.");
                                         index = scanner.nextInt();
-                                        player1.hireEmployee(lookingForJob.get(index - 1));
+                                        try {
+                                            player1.hireEmployee(lookingForJob.get(index - 1));
+                                        } catch (IndexOutOfBoundsException e) {
+                                            System.out.println("You typed too big number, max is now: " + lookingForJob.size());
+                                        }
                                         break Menu;
                                     case "3":
                                         int indexDis;
@@ -443,14 +447,20 @@ public class Main
                                         System.out.print("Who, from your employee list, do you want to dismiss?");
                                         System.out.println("Type (1) for first person, (2) for second etc.");
                                         indexDis = scan.nextInt();
-                                        player1.dismissEmployee(player1.employeeList.get(indexDis - 1));
+                                        try {
+                                            player1.dismissEmployee(player1.employeeList.get(indexDis - 1));
+                                        } catch (IndexOutOfBoundsException e) {
+                                            System.out.println("You typed too big number, max is now: " + player1.employeeList.size());
+                                        }
                                         break Menu;
                                     case "4":
-                                        player1.planWork();
+                                        if (calendar.get(calendar.DAY_OF_WEEK) < 6) {
+                                            player1.planWork();
+                                        } else System.out.println("you can't have employees work over the weekend");
                                         break Menu;
                                     case "5":
                                         player1.showEmployees();
-                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.out.println("\nYou will be returned to menu after enter");
                                         System.in.read();
                                         break Menu;
                                     case "0":
@@ -462,8 +472,9 @@ public class Main
                                 player1.fightWithZus();
                                 break Menu;
                             case "4":
-                                checkForWin(player1);
-                                endTurn(calendarHelper,calendar,player1);
+                                checkForWinLose(player1, calendar);
+                                endTurn(calendarHelper, calendar, player1);
+                                player1.employeesL4Draw();
                                 break Exit;
                             case "5":
                                 System.out.print(calendar.getTime() + "\n");
@@ -494,7 +505,7 @@ public class Main
                                         } catch (NullPointerException e) {
                                             System.out.println("You don't have any active project now");
                                         }
-                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.out.println("\nYou will be returned to menu after enter");
                                         System.in.read();
                                         break Menu;
                                     case "2":
@@ -508,7 +519,7 @@ public class Main
                                         break Menu;
                                     case "5":
                                         showAvailableProjects();
-                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.out.println("\nYou will be returned to menu after enter");
                                         System.in.read();
                                         break Menu;
                                     case "6":
@@ -519,13 +530,16 @@ public class Main
                                         System.out.println("Which project from search you want to take?");
                                         System.out.println("Type (1) for first, (2) for second etc.");
                                         index = scanner.nextInt();
-                                        player2.signContract(availableProjectList.get(index - 1));
+                                        try {
+                                            player2.signContract(availableProjectList.get(index - 1));
+                                        } catch (IndexOutOfBoundsException e) {
+                                            System.out.println("You typed too big number, max is now: " + availableProjectList.size());
+                                        }
                                         varDeadLine.add(varDeadLine.DAY_OF_MONTH, player2.getActiveProject().getDeadlineTime());
                                         player2.getActiveProject().getDeadLine().setTime(varDeadLine.getTime());
                                         break Menu;
                                     case "7":
                                         player2.returnProject();
-                                        System.out.println("Project returned");
                                         break Menu;
                                     case "8":
                                         Scanner scanner1 = new Scanner(System.in);
@@ -546,7 +560,7 @@ public class Main
                                 switch (employeeMenu()) {
                                     case "1":
                                         showUnemployed();
-                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.out.println("\nYou will be returned to menu after enter");
                                         System.in.read();
                                         break Menu;
                                     case "2":
@@ -556,7 +570,11 @@ public class Main
                                         System.out.println("Who, from search for employees, do you want to hire?");
                                         System.out.println("Type (1) for first person, (2) for second etc.");
                                         index = scanner.nextInt();
-                                        player2.hireEmployee(lookingForJob.get(index - 1));
+                                        try {
+                                            player2.hireEmployee(lookingForJob.get(index - 1));
+                                        } catch (IndexOutOfBoundsException e) {
+                                            System.out.println("You typed too big number, max is now:" + lookingForJob.size());
+                                        }
                                         break Menu;
                                     case "3":
                                         int indexDis;
@@ -564,14 +582,20 @@ public class Main
                                         System.out.print("Who, from your employee list, do you want to dismiss?");
                                         System.out.println("Type (1) for first person, (2) for second etc.");
                                         indexDis = scan.nextInt();
-                                        player2.dismissEmployee(player2.employeeList.get(indexDis - 1));
+                                        try {
+                                            player2.dismissEmployee(player2.employeeList.get(indexDis - 1));
+                                        } catch (IndexOutOfBoundsException e) {
+                                            System.out.println("You typed too big number, max is now: " + player2.employeeList.size());
+                                        }
                                         break Menu;
                                     case "4":
-                                        player2.planWork();
+                                        if (calendar2.get(calendar2.DAY_OF_WEEK) < 6) {
+                                            player2.planWork();
+                                        } else System.out.println("you can't have employees work over the weekend");
                                         break Menu;
                                     case "5":
                                         player2.showEmployees();
-                                        System.out.println("\nYou will be returned to menu after any key");
+                                        System.out.println("\nYou will be returned to menu after enter");
                                         System.in.read();
                                         break Menu;
                                     case "0":
@@ -583,8 +607,9 @@ public class Main
                                 player2.fightWithZus();
                                 break Menu;
                             case "4":
-                                checkForWin(player2);
-                                endTurn(calendarHelper2,calendar2,player2);
+                                checkForWinLose(player2, calendar2);
+                                endTurn(calendarHelper2, calendar2, player2);
+                                player2.employeesL4Draw();
                                 break Exit2;
                             case "5":
                                 System.out.print(calendar2.getTime() + "\n");
@@ -610,51 +635,47 @@ public class Main
 
     //region [Helpers]
     private static void showAvailableProjects() {
-        for (Project project : availableProjectList)
-        {
-            if (project.getIsAvailable() && !project.getIsDone())
-            {
-                System.out.println(project.getProjectName()+" is hard = "+project.getHard());
-                System.out.println("Project by: "+project.getClient().getName()+" "+project.getClient().getSurname());
+        for (Project project : availableProjectList) {
+            if (project.getIsAvailable() && !project.getIsDone()) {
+                System.out.println(project.getProjectName() + " is hard = " + project.getHard());
+                System.out.println("Project by: " + project.getClient().getName() + " " + project.getClient().getSurname());
                 project.projectTasks();
-                System.out.println("\nSalary: "+project.getSalary());
-                System.out.print("Days for finish: "+project.getDeadlineTime());
+                System.out.println("\nSalary: " + project.getSalary());
+                System.out.print("Days for finish: " + project.getDeadlineTime());
                 System.out.println("\n");
             }
         }
     }
 
-    private static void showUnemployed()
-    {
+    private static void showUnemployed() {
         System.out.println("Employees looking for job");
-        for (Employee employee : lookingForJob)
-        {
+        for (Employee employee : lookingForJob) {
             System.out.print("\n");
             employee.showInfo();
         }
     }
 
-    private static void showFriends()
-    {
-        for (FriendsFromSchool friend : friendsList)
-        {
+    private static void showFriends() {
+        for (FriendsFromSchool friend : friendsList) {
             System.out.print("\n");
             friend.showInfo();
         }
     }
 
-    private static void checkForWin(Player player)
-    {
-        if ((player.getBigProjectsDone() == 3 && player.getStartMoney() < player.getCash()) || (projectList.size() == 0 && availableProjectList.size() ==0 &&player.getStartMoney() < player.getCash())) {
+    private static void checkForWinLose(Player player, Calendar calendar) {
+        if ((player.getBigProjectsDone() == 3 && player.getStartMoney() < player.getCash()) || (projectList.size() == 0 && availableProjectList.size() == 0 && player.getStartMoney() < player.getCash())) {
             System.out.println("Congratulations" + player.getName() + player.getSurname() + " you have won the game");
+            Runtime.getRuntime().exit(0);
+        }
+        if (player.getZusVisits() < 2 && calendar.get(calendar.DAY_OF_MONTH) == 1 && calendar.get(calendar.MONTH) > 1) {
+            System.out.println("ZUS has closed your business, game lost");
             Runtime.getRuntime().exit(0);
         }
     }
 
-    private static void endTurn(Calendar calendarHelper, Calendar calendar, Player player)
-    {
+    private static void endTurn(Calendar calendarHelper, Calendar calendar, Player player) {
         calendarHelper.add(Calendar.DAY_OF_MONTH, 1);
-        if (calendarHelper.MONTH != calendar.MONTH) {
+        if (calendarHelper.get(calendarHelper.MONTH) != calendar.get(calendar.MONTH)) {
             System.out.print("Next month incoming, tax office remembered you and took 10% of your income");
             System.out.print("You also remembered about your employees");
             player.setCash(player.getCash() - player.getIncome() * 1 / 10);
@@ -662,7 +683,7 @@ public class Main
             for (Employee employee : player.employeeList) {
                 player.setCash(player.getCash() - employee.getSalary());
                 employee.setCash(employee.getCash() + employee.getSalary());
-                player.setCash(player.getCash()-employee.employeeRetention);
+                player.setCash(player.getCash() - employee.employeeRetention);
             }
             System.out.print("After all taxes and salaries your budget is: " + player.getCash());
         }
@@ -681,18 +702,18 @@ public class Main
             }
         }
         System.out.print("Skipping to next day");
-        System.out.println("\nPlayer will be changed after any key");
+        System.out.println("\nPlayer will be changed after enter");
         calendar.setTime(calendarHelper.getTime());
     }
 
-    private static void welcomeMassage()
-    {
+    private static void welcomeMassage() {
         System.out.println("\nWelcome to appstore game\n");
         System.out.println("\nYour friends are\n");
         showFriends();
         System.out.println("\nThere are 15 projects in game, you will see only 3 now. Rest you have to find by doing research or hiring seller");
         System.out.println("Your goal is to finish 3 'hard' projects or end with bigger cash balance than on start\n Have fun!");
     }
+
 
     //endregion
 }

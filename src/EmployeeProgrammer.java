@@ -1,21 +1,26 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-public class EmployeeProgrammer extends Employee implements GenerateRandomInteger,GenerateRandomDouble
-{
+public class EmployeeProgrammer extends Employee implements GenerateRandomInteger, GenerateRandomDouble {
     private boolean frontend;
     private boolean backend;
     private boolean database;
     private boolean mobile;
     private boolean wordpress;
     private boolean prestashop;
-    private Double salary = doubleGenerate()*5;
+    private Double salary = doubleGenerate() * 5;
     private final boolean isProgrammer = true;
 
-    public boolean isFrontend () {return this.frontend;}
-    public boolean isBackend () {return this.backend;}
-    public boolean isDatabase () {return this.database;}
+    public boolean isFrontend() {
+        return this.frontend;
+    }
+
+    public boolean isBackend() {
+        return this.backend;
+    }
+
+    public boolean isDatabase() {
+        return this.database;
+    }
 
     public boolean isPrestashop() {
         return prestashop;
@@ -26,7 +31,9 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
 
     }
 
-    public boolean isMobile () {return this.mobile;}
+    public boolean isMobile() {
+        return this.mobile;
+    }
 
     public boolean isWordpress() {
         return wordpress;
@@ -53,8 +60,7 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
             this.wordpress = trueFalse.nextBoolean();
             this.prestashop = trueFalse.nextBoolean();
             this.setIsProgrammer(true);
-        } else
-        {
+        } else {
             int nameNumber = intGenerate(6);
             String name = namePoolFemale[nameNumber];
             int surnameNumber = intGenerate(10);
@@ -83,31 +89,27 @@ public class EmployeeProgrammer extends Employee implements GenerateRandomIntege
         return this.salary;
     }
 
-    public void showInfo()
-    {
-        System.out.println("Programmer "+this.getName()+" "+this.getSurname()+" lat: "+this.age+" front-end:"+this.frontend+" backend: "+this.backend+" database: "+this.database+" mobile: "+this.mobile+" wordpress: "+this.wordpress+" pretashop: "+this.prestashop);
+    public void showInfo() {
+        System.out.println("Programmer " + this.getName() + " " + this.getSurname() + " lat: " + this.age + " front-end:" + this.frontend + " backend: " + this.backend + " database: " + this.database + " mobile: " + this.mobile + " wordpress: " + this.wordpress + " pretashop: " + this.prestashop);
     }
 
     @Override
-    public Integer intGenerate(Integer bound)
-    {
+    public Integer intGenerate(Integer bound) {
         Random r = new Random();
         int result = r.nextInt(bound);
         return result;
     }
 
-    public Integer intGenerate(Integer bound, Integer minimum)
-    {
+    public Integer intGenerate(Integer bound, Integer minimum) {
         Random r = new Random();
         int result = r.nextInt(bound) + minimum;
         return result;
     }
 
     @Override
-    public Double doubleGenerate()
-    {
+    public Double doubleGenerate() {
         Random r = new Random();
-        double result = r.nextDouble()*20+400;
+        double result = r.nextDouble() * 20 + 400;
         return result;
     }
 

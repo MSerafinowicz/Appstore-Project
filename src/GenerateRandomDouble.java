@@ -1,4 +1,3 @@
-public interface GenerateRandomDouble
-{
+public interface GenerateRandomDouble {
     public Double doubleGenerate();
 }
